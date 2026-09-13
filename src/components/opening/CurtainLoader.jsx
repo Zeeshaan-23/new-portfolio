@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import './CurtainLoader.css';
 
 /**
@@ -48,6 +48,21 @@ export default function CurtainLoader({ onComplete }) {
       handleComplete();
     }, 1150);
   }, [isOpening, isCompleted, handleComplete]);
+
+  // Global keyboard listener so pressing Enter anywhere opens the curtain
+  useEffect(() => {
+    if (isCompleted || isOpening) return;
+
+    const handleGlobalKeyDown = (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleClick();
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, [isCompleted, isOpening, handleClick]);
 
   // When BAR 1 (final group) finishes its animation
   const handleFinalGroupAnimationEnd = (e) => {
