@@ -168,7 +168,19 @@ export default function App() {
           mouseStrength={0.2}
           pageLoadAnimation={false}
           brightness={0.5}
+          overlayText={{
+            line1: 'Building Fast,',
+            line2: 'Shipping even Faster'
+          }}
         />
+
+        {/* Accessible screen-reader headline for Page 1 */}
+        <div className="page-one-hero-accessible sr-only" aria-label="Hero Title">
+          <h1>
+            <span>Building Fast,</span>
+            <span>Shipping even Faster</span>
+          </h1>
+        </div>
 
         {/* Explore cue button on Page 1 */}
         {activePage === 1 && (

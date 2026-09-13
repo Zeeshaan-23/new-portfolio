@@ -75,11 +75,16 @@ const PageTwo = forwardRef(function PageTwo({ onReturnToPageOne, onProceedToPage
       {/* Main Content Layout: About Me (Left) & ProfileCard (Right) */}
       <main className="page-two-main">
         <div className="page-two-grid">
-          {/* Left Column: Heading & Empty Text Area */}
+          {/* Left Column: Heading & About Description */}
           <section className="about-content-col">
             <h2 className="about-heading">About Me</h2>
             <div className="about-text-area">
-              {/* Paragraph area kept empty for now */}
+              <p className="about-bio-p">
+                Hey, I’m <strong>Zeeshaan</strong> — a Computer Science student at <strong>SRM University AP</strong> building full-stack applications and wrangling backend infrastructure without setting production on fire. From configuring <strong>IBM DataPower Gateways</strong> and enterprise security policies for production clients at <strong>Bottrion Systems</strong>, to architecting platforms like <strong>eSign</strong> (Django, React, Redis, Celery), I like building systems that actually hold up under real-world pressure.
+              </p>
+              <p className="about-bio-p">
+                I heavily leverage modern <strong>AI tools and systems</strong> to aggressively fast-track my learning curve and strip out development friction — because why spend three hours fighting boilerplate when you can iterate and ship at warp speed? When I'm not architecting APIs or probing <strong>TryHackMe</strong> labs, the mission is simple: <strong>build fast, ship even faster</strong>, and never push directly to <code>main</code> on a Friday.
+              </p>
             </div>
           </section>
 

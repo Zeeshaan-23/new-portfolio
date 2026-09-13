@@ -144,13 +144,61 @@
 }
 
 .about-text-area {
-  min-height: 160px;
-  background: rgba(18, 15, 23, 0.5);
-  backdrop-filter: blur(14px);
-  border: 1px dashed rgba(114, 225, 62, 0.22);
-  border-radius: 12px;
-  padding: 2rem 2.25rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(114, 225, 62, 0.03);
+  background: rgba(18, 15, 23, 0.72);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(114, 225, 62, 0.25);
+  border-radius: 14px;
+  padding: 1.75rem 2rem;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), inset 0 0 25px rgba(114, 225, 62, 0.04);
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* Custom scrollbar for about-text-area */
+.about-text-area::-webkit-scrollbar {
+  width: 5px;
+}
+
+.about-text-area::-webkit-scrollbar-track {
+  background: rgba(18, 15, 23, 0.4);
+  border-radius: 4px;
+}
+
+.about-text-area::-webkit-scrollbar-thumb {
+  background: rgba(114, 225, 62, 0.35);
+  border-radius: 4px;
+}
+
+.about-text-area::-webkit-scrollbar-thumb:hover {
+  background: #72e13e;
+}
+
+.about-bio-p {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.98rem;
+  line-height: 1.68;
+  color: #d1d5db;
+  margin: 0 0 1.05rem 0;
+  letter-spacing: 0.01em;
+}
+
+.about-bio-p:last-of-type {
+  margin-bottom: 0;
+}
+
+.about-bio-p strong {
+  color: #72e13e;
+  font-weight: 600;
+}
+
+.about-bio-p code {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.88em;
+  padding: 0.12rem 0.42rem;
+  background: rgba(114, 225, 62, 0.1);
+  border: 1px solid rgba(114, 225, 62, 0.25);
+  border-radius: 4px;
+  color: #72e13e;
 }
 
 /* Right Column: React Bits ProfileCard */

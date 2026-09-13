@@ -8,12 +8,18 @@ import Timeline from './subpages/Timeline';
 import FieldsOfStudy from './subpages/FieldsOfStudy';
 import './PageThree.css';
 
+import imgLanguages from '../../assets/pictures/custom1.jpg';
+import imgProjects from '../../assets/pictures/736d1fc83f95cfbe0e668a50f28279c7.jpg';
+import imgCertifications from '../../assets/pictures/glass-palette.webp';
+import imgTimeline from '../../assets/pictures/Master1.jpg';
+import imgFields from '../../assets/pictures/e094cf85c35a3a7763f3df418b1d776c.jpg';
+
 const demoItems = [
-  { key: 'languages', link: '#', text: 'Languages and Skills', image: 'https://images.unsplash.com/photo-1782977389500-dd7adad33ebe?q=80&w=600&h=400&fit=crop&sat=-100&auto=format' },
-  { key: 'projects', link: '#', text: 'Projects', image: 'https://images.unsplash.com/photo-1781499455083-6ccc3beb20cd?q=80&w=600&h=400&fit=crop&sat=-100&auto=format' },
-  { key: 'certifications', link: '#', text: 'Certifications', image: 'https://images.unsplash.com/photo-1776394254711-4a0d7345269a?q=80&w=600&h=400&fit=crop&sat=-100&auto=format' },
-  { key: 'timeline', link: '#', text: 'Timeline', image: 'https://images.unsplash.com/photo-1781242629922-6f39cc3671cd?q=80&w=600&h=400&fit=crop&sat=-100&auto=format' },
-  { key: 'fields', link: '#', text: 'Fields of Study', image: 'https://images.unsplash.com/photo-1782977389500-dd7adad33ebe?q=80&w=600&h=400&fit=crop&sat=-100&auto=format' }
+  { key: 'languages', link: '#', text: 'Languages and Skills', image: imgLanguages },
+  { key: 'projects', link: '#', text: 'Projects', image: imgProjects },
+  { key: 'certifications', link: '#', text: 'Certifications', image: imgCertifications },
+  { key: 'timeline', link: '#', text: 'Timeline', image: imgTimeline },
+  { key: 'fields', link: '#', text: 'Fields of Study', image: imgFields }
 ];
 
 const SUBPAGE_COMPONENTS = {

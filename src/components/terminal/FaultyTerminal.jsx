@@ -1,4 +1,4 @@
-import { Renderer, Program, Mesh, Color, Triangle } from 'ogl';
+import { Renderer, Program, Mesh, Color, Triangle, Texture } from 'ogl';
 import { useEffect, useRef, useMemo, useCallback } from 'react';
 import './FaultyTerminal.css';
 
@@ -38,6 +38,10 @@ uniform float uPageLoadProgress;
 uniform float uUsePageLoadAnimation;
 uniform float uBrightness;
 uniform float uLightMode;
+
+uniform sampler2D uTextTexture;
+uniform float uHasText;
+uniform float uTextCurvature;
 
 float time;
 
@@ -173,11 +177,15 @@ vec3 getColor(vec2 p){
     return baseColor;
 }
 
-vec2 barrel(vec2 uv){
+vec2 barrelWarp(vec2 uv, float k){
   vec2 c = uv * 2.0 - 1.0;
   float r2 = dot(c, c);
-  c *= 1.0 + uCurvature * r2;
+  c *= 1.0 + k * r2;
   return c * 0.5 + 0.5;
+}
+
+vec2 barrel(vec2 uv){
+  return barrelWarp(uv, uCurvature);
 }
 
 void main() {
@@ -212,6 +220,19 @@ void main() {
       col = mix(vec3(1.0), ink, coverage);
     }
 
+    if (uHasText > 0.5) {
+      vec2 textUv = vUv;
+      if (uTextCurvature != 0.0) {
+        textUv = barrelWarp(textUv, uTextCurvature);
+      }
+      if (textUv.x >= 0.0 && textUv.x <= 1.0 && textUv.y >= 0.0 && textUv.y <= 1.0) {
+        vec4 textSample = texture2D(uTextTexture, textUv);
+        if (textSample.a > 0.001) {
+          col = mix(col, textSample.rgb, textSample.a);
+        }
+      }
+    }
+
     gl_FragColor = vec4(col, 1.0);
 }
 `;
@@ -225,6 +246,78 @@ function hexToRgb(hex) {
       .join('');
   const num = parseInt(h.slice(0, 6), 16);
   return [((num >> 16) & 255) / 255, ((num >> 8) & 255) / 255, (num & 255) / 255];
+}
+
+function renderTextToCanvas(canvas, width, height, dpr, lines, customSize = null) {
+  if (!canvas || !lines || lines.length === 0) return;
+  const pixelWidth = Math.max(1, Math.round(width * dpr));
+  const pixelHeight = Math.max(1, Math.round(height * dpr));
+
+  if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
+    canvas.width = pixelWidth;
+    canvas.height = pixelHeight;
+  }
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  ctx.clearRect(0, 0, pixelWidth, pixelHeight);
+
+  // Substantially larger responsive typography for grand hero statement:
+  // Desktop: ~110px - 140px, Tablet: ~70px - 90px, Mobile: ~38px - 48px
+  let baseFontSize = customSize
+    ? (typeof customSize === 'number' ? customSize : parseFloat(customSize))
+    : Math.max(40, Math.min(width * 0.088, 140));
+  let fontSize = Math.round(baseFontSize * dpr);
+
+  ctx.font = `bold ${fontSize}px 'Cefagu', sans-serif`;
+
+  const line1 = lines[0] || '';
+  const line2 = lines[1] || '';
+  const maxWidth = pixelWidth * 0.94;
+
+  let m1 = ctx.measureText(line1).width;
+  let m2 = ctx.measureText(line2).width;
+  let maxMeasured = Math.max(m1, m2);
+
+  if (maxMeasured > maxWidth && maxMeasured > 0) {
+    const scaleFactor = maxWidth / maxMeasured;
+    fontSize = Math.max(Math.round(22 * dpr), Math.floor(fontSize * scaleFactor));
+    ctx.font = `bold ${fontSize}px 'Cefagu', sans-serif`;
+  }
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  const centerX = pixelWidth / 2;
+  const centerY = pixelHeight * 0.45;
+  const lineSpacing = fontSize * 1.16;
+  const y1 = centerY - lineSpacing * 0.52;
+  const y2 = centerY + lineSpacing * 0.52;
+
+  // Pass 1: Luminous atmospheric bloom
+  ctx.save();
+  ctx.shadowColor = 'rgba(255, 255, 255, 0.55)';
+  ctx.shadowBlur = Math.round(28 * dpr);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(line1, centerX, y1);
+  ctx.fillText(line2, centerX, y2);
+  ctx.restore();
+
+  // Pass 2: Bold stroke enhancement for weighted, punchy Cefagu glyphs
+  ctx.save();
+  ctx.lineWidth = Math.max(2, Math.round(2.8 * dpr));
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineJoin = 'round';
+  ctx.miterLimit = 2;
+  ctx.strokeText(line1, centerX, y1);
+  ctx.strokeText(line2, centerX, y2);
+
+  // Pass 3: Crisp foreground fill
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(line1, centerX, y1);
+  ctx.fillText(line2, centerX, y2);
+  ctx.restore();
 }
 
 export default function FaultyTerminal({
@@ -247,6 +340,9 @@ export default function FaultyTerminal({
   pageLoadAnimation = true,
   brightness = 1,
   lightMode = false,
+  overlayText = null,
+  textSize = null,
+  textCurvature = null,
   className = '',
   style,
   ...rest
@@ -260,6 +356,23 @@ export default function FaultyTerminal({
   const rafRef = useRef(0);
   const loadAnimationStartRef = useRef(0);
   const timeOffsetRef = useRef(Math.random() * 100);
+
+  const parsedOverlayText = useMemo(() => {
+    if (!overlayText) return null;
+    if (overlayText === true) {
+      return ['Building Fast,', 'Shipping even Faster'];
+    }
+    if (Array.isArray(overlayText)) {
+      return overlayText;
+    }
+    if (typeof overlayText === 'object') {
+      return [
+        overlayText.line1 || 'Building Fast,',
+        overlayText.line2 || 'Shipping even Faster'
+      ];
+    }
+    return [String(overlayText)];
+  }, [overlayText]);
 
   const tintVec = useMemo(() => hexToRgb(tint), [tint]);
 
@@ -284,6 +397,39 @@ export default function FaultyTerminal({
     gl.clearColor(lightMode ? 1 : 0, lightMode ? 1 : 0, lightMode ? 1 : 0, 1);
 
     const geometry = new Triangle(gl);
+
+    const hasText = Boolean(parsedOverlayText && parsedOverlayText.length > 0);
+    const textCanvas = document.createElement('canvas');
+    let textTexture = null;
+
+    if (hasText) {
+      renderTextToCanvas(
+        textCanvas,
+        ctn.offsetWidth || window.innerWidth,
+        ctn.offsetHeight || window.innerHeight,
+        dpr,
+        parsedOverlayText,
+        textSize
+      );
+      textTexture = new Texture(gl, {
+        image: textCanvas,
+        generateMipmaps: false,
+        minFilter: gl.LINEAR,
+        magFilter: gl.LINEAR,
+        wrapS: gl.CLAMP_TO_EDGE,
+        wrapT: gl.CLAMP_TO_EDGE,
+        flipY: true
+      });
+      textTexture.needsUpdate = true;
+    } else {
+      const dummyCanvas = document.createElement('canvas');
+      dummyCanvas.width = 1;
+      dummyCanvas.height = 1;
+      textTexture = new Texture(gl, {
+        image: dummyCanvas,
+        generateMipmaps: false
+      });
+    }
 
     const program = new Program(gl, {
       vertex: vertexShader,
@@ -313,7 +459,12 @@ export default function FaultyTerminal({
         uPageLoadProgress: { value: pageLoadAnimation ? 0 : 1 },
         uUsePageLoadAnimation: { value: pageLoadAnimation ? 1 : 0 },
         uBrightness: { value: brightness },
-        uLightMode: { value: lightMode ? 1 : 0 }
+        uLightMode: { value: lightMode ? 1 : 0 },
+        uTextTexture: { value: textTexture },
+        uHasText: { value: hasText ? 1.0 : 0.0 },
+        uTextCurvature: {
+          value: textCurvature !== null && textCurvature !== undefined ? textCurvature : curvature
+        }
       }
     });
     programRef.current = program;
@@ -328,11 +479,30 @@ export default function FaultyTerminal({
         gl.canvas.height,
         gl.canvas.width / gl.canvas.height
       );
+
+      if (hasText && textTexture) {
+        renderTextToCanvas(textCanvas, ctn.offsetWidth, ctn.offsetHeight, dpr, parsedOverlayText, textSize);
+        textTexture.image = textCanvas;
+        textTexture.needsUpdate = true;
+      }
     }
 
     const resizeObserver = new ResizeObserver(() => resize());
     resizeObserver.observe(ctn);
     resize();
+
+    let fontLoadCancelled = false;
+    if (hasText && document.fonts) {
+      const handleFontReady = () => {
+        if (fontLoadCancelled || !ctn || !textTexture) return;
+        renderTextToCanvas(textCanvas, ctn.offsetWidth, ctn.offsetHeight, dpr, parsedOverlayText, textSize);
+        textTexture.image = textCanvas;
+        textTexture.needsUpdate = true;
+      };
+
+      document.fonts.load(`bold 48px 'Cefagu'`).then(handleFontReady).catch(() => {});
+      document.fonts.ready.then(handleFontReady);
+    }
 
     const update = t => {
       rafRef.current = requestAnimationFrame(update);
@@ -376,6 +546,7 @@ export default function FaultyTerminal({
     if (mouseReact) ctn.addEventListener('mousemove', handleMouseMove);
 
     return () => {
+      fontLoadCancelled = true;
       cancelAnimationFrame(rafRef.current);
       resizeObserver.disconnect();
       if (mouseReact) ctn.removeEventListener('mousemove', handleMouseMove);
@@ -404,6 +575,9 @@ export default function FaultyTerminal({
     pageLoadAnimation,
     brightness,
     lightMode,
+    parsedOverlayText,
+    textSize,
+    textCurvature,
     handleMouseMove
   ]);
 

@@ -95,4 +95,6 @@
   border-radius: 50px;
   background-size: cover;
   background-position: 50% 50%;
+  filter: grayscale(100%) contrast(1.08);
+  -webkit-filter: grayscale(100%) contrast(1.08);
 }
