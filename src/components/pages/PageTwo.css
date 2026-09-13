@@ -14,6 +14,16 @@
   box-sizing: border-box;
 }
 
+/* Background LightTunnel Canvas spanning full viewport */
+.page-two-bg-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
 /* Top bar / navigation header */
 .page-two-header {
   flex-shrink: 0;
@@ -21,7 +31,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.85rem 2rem;
-  background: #120F17;
+  background: rgba(18, 15, 23, 0.85);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(114, 225, 62, 0.25);
   z-index: 10;
 }
@@ -51,53 +62,208 @@
   background: rgba(114, 225, 62, 0.06);
 }
 
-/* Return to Terminal trigger button */
-.page-two-back-btn {
+.page-two-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Return trigger button */
+.page-two-back-btn,
+.page-two-next-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
   background: rgba(114, 225, 62, 0.06);
   border: 1px solid rgba(114, 225, 62, 0.35);
   color: #72e13e;
   font-family: ui-monospace, Consolas, monospace;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   letter-spacing: 0.08em;
-  padding: 0.45rem 1rem;
+  padding: 0.42rem 0.9rem;
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.25s ease;
 }
 
-.page-two-back-btn:hover {
+.page-two-back-btn:hover,
+.page-two-next-btn:hover {
   background: rgba(114, 225, 62, 0.18);
   border-color: #72e13e;
   box-shadow: 0 0 15px rgba(114, 225, 62, 0.3);
   transform: translateY(-1px);
 }
 
-.page-two-back-badge {
+.page-two-btn-badge {
+  font-size: 0.65rem;
+  padding: 0.08rem 0.35rem;
+  border: 1px solid rgba(114, 225, 62, 0.4);
+  border-radius: 4px;
+  background: rgba(114, 225, 62, 0.12);
+  color: #72e13e;
+}
+
+/* Main Content Area */
+.page-two-main {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 3rem 5rem 3rem;
+  box-sizing: border-box;
+}
+
+/* Two-column layout: Left (About Me text) & Right (Photo slot) */
+.page-two-grid {
+  width: 100%;
+  max-width: 1300px;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+/* Left Column: Heading & Text Area */
+.about-content-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.about-heading {
+  font-family: 'Cefagu', sans-serif;
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  line-height: 1.1;
+  color: #45f031;
+  margin: 0;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 16px rgba(69, 240, 49, 0.4);
+}
+
+.about-text-area {
+  background: rgba(18, 15, 23, 0.65);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(114, 225, 62, 0.28);
+  border-radius: 12px;
+  padding: 2rem 2.25rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(114, 225, 62, 0.04);
+}
+
+.about-placeholder-text {
+  font-family: var(--sans, system-ui, sans-serif);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: rgba(229, 231, 235, 0.8);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+/* Right Column: Reserved Photo Slot (No radial treatment) */
+.about-photo-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.about-photo-container {
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 4 / 5;
+  background: rgba(18, 15, 23, 0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(114, 225, 62, 0.35);
+  border-radius: 14px;
+  padding: 0.85rem;
+  box-sizing: border-box;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(114, 225, 62, 0.1);
+  transition: border-color 0.3s ease;
+}
+
+.about-photo-slot {
+  width: 100%;
+  height: 100%;
+  border: 1px dashed rgba(114, 225, 62, 0.3);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.about-photo-indicator {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: rgba(114, 225, 62, 0.65);
+  padding: 0.4rem 0.8rem;
+  border: 1px solid rgba(114, 225, 62, 0.25);
+  border-radius: 4px;
+  background: rgba(114, 225, 62, 0.05);
+}
+
+/* Bottom Explore Cue Button */
+.page-two-footer-cue {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.page-two-explore-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(18, 15, 23, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(114, 225, 62, 0.35);
+  border-radius: 30px;
+  color: #72e13e;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.55rem 1.3rem;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+.page-two-explore-pill:hover {
+  background: rgba(114, 225, 62, 0.15);
+  border-color: #72e13e;
+  box-shadow: 0 0 20px rgba(114, 225, 62, 0.35);
+  transform: translateY(-2px);
+}
+
+.page-two-explore-badge {
   font-size: 0.65rem;
   padding: 0.1rem 0.38rem;
-  border: 1px solid rgba(114, 225, 62, 0.4);
+  border: 1px solid rgba(114, 225, 62, 0.45);
   border-radius: 4px;
   background: rgba(114, 225, 62, 0.1);
   color: #72e13e;
-  letter-spacing: 0.08em;
-  opacity: 0.85;
-  margin-left: 0.25rem;
 }
 
-/* Responsive wrapper for FlowingMenu filling available viewport height */
-.page-two-menu-wrapper {
-  flex: 1;
-  min-height: 0;
-  width: 100%;
-  position: relative;
-  overflow: hidden;
+.page-two-explore-arrow {
+  display: inline-block;
+  animation: bounceDown 1.8s ease-in-out infinite;
 }
 
-@media (max-width: 768px) {
-  .page-two-header {
-    padding: 0.75rem 1.25rem;
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .page-two-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .about-photo-container {
+    max-width: 280px;
+  }
+  .page-two-main {
+    padding: 1.5rem;
   }
 }

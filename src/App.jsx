@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import CurtainLoader from './components/opening/CurtainLoader';
 import FaultyTerminal from './components/terminal/FaultyTerminal';
 import PageTwo from './components/pages/PageTwo';
+import PageThree from './components/pages/PageThree';
 import './App.css';
 
 export default function App() {
@@ -9,6 +10,7 @@ export default function App() {
   const [isCurtainActive, setIsCurtainActive] = useState(true);
   const isTransitioningRef = useRef(false);
   const pageTwoRef = useRef(null);
+  const pageThreeRef = useRef(null);
   const touchStartYRef = useRef(0);
 
   const activePageRef = useRef(activePage);
@@ -18,11 +20,12 @@ export default function App() {
   isCurtainActiveRef.current = isCurtainActive;
 
   const goToPage = useCallback((targetPage) => {
-    if (isTransitioningRef.current || targetPage === activePageRef.current) return;
+    const target = Math.min(3, Math.max(1, targetPage));
+    if (isTransitioningRef.current || target === activePageRef.current) return;
 
     isTransitioningRef.current = true;
-    activePageRef.current = targetPage;
-    setActivePage(targetPage);
+    activePageRef.current = target;
+    setActivePage(target);
 
     // Release transition lock after animation settles (900ms duration)
     setTimeout(() => {
@@ -35,52 +38,61 @@ export default function App() {
     setIsCurtainActive(false);
   }, []);
 
-  // Wheel and trackpad gesture coordinator
+  // Wheel and trackpad gesture coordinator across 3 pages
   const handleWheel = useCallback((e) => {
     if (isTransitioningRef.current) return;
 
     const current = activePageRef.current;
-    if (current === 1 && e.deltaY > 30) {
-      goToPage(2);
-    } else if (current === 2 && e.deltaY < -30) {
-      // Only transition back if Page 2 is scrolled to the top
-      const pageTwoEl = pageTwoRef.current;
-      if (pageTwoEl && pageTwoEl.scrollTop <= 5) {
+    if (e.deltaY > 30) {
+      // Forward scroll
+      if (current === 1) {
+        goToPage(2);
+      } else if (current === 2) {
+        goToPage(3);
+      }
+    } else if (e.deltaY < -30) {
+      // Backward scroll
+      if (current === 3) {
+        goToPage(2);
+      } else if (current === 2) {
         goToPage(1);
       }
     }
   }, [goToPage]);
 
-  // Keyboard navigation coordinator (Arrow keys, Page keys, and Enter key)
+  // Keyboard navigation coordinator across 3 pages (Enter, Arrows, Page keys)
   const handleKeyDown = useCallback((e) => {
     if (isTransitioningRef.current) return;
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
     const isEnter = e.key === 'Enter' || e.code === 'Enter' || e.code === 'NumpadEnter';
 
-    // Enter key scrolls/advances through each page once the curtain has opened
     if (isEnter) {
       if (isCurtainActiveRef.current) return;
       e.preventDefault();
       const current = activePageRef.current;
-      if (current === 1) {
-        goToPage(2);
-      } else if (current === 2) {
-        goToPage(1);
+      if (e.shiftKey) {
+        // Shift+Enter navigates backward
+        if (current === 3) goToPage(2);
+        else if (current === 2) goToPage(1);
+      } else {
+        // Enter navigates forward in cycle: 1 -> 2 -> 3 -> 1
+        if (current === 1) goToPage(2);
+        else if (current === 2) goToPage(3);
+        else if (current === 3) goToPage(1);
       }
       return;
     }
 
     const current = activePageRef.current;
-    if (current === 1 && (e.key === 'ArrowDown' || e.key === 'PageDown')) {
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') {
       e.preventDefault();
-      goToPage(2);
-    } else if (current === 2 && (e.key === 'ArrowUp' || e.key === 'PageUp')) {
-      const pageTwoEl = pageTwoRef.current;
-      if (pageTwoEl && pageTwoEl.scrollTop <= 5) {
-        e.preventDefault();
-        goToPage(1);
-      }
+      if (current === 1) goToPage(2);
+      else if (current === 2) goToPage(3);
+    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      if (current === 3) goToPage(2);
+      else if (current === 2) goToPage(1);
     }
   }, [goToPage]);
 
@@ -94,13 +106,14 @@ export default function App() {
     const deltaY = touchStartYRef.current - e.changedTouches[0].clientY;
     const current = activePageRef.current;
 
-    if (current === 1 && deltaY > 50) {
-      goToPage(2);
-    } else if (current === 2 && deltaY < -50) {
-      const pageTwoEl = pageTwoRef.current;
-      if (pageTwoEl && pageTwoEl.scrollTop <= 5) {
-        goToPage(1);
-      }
+    if (deltaY > 50) {
+      // Swipe up: forward
+      if (current === 1) goToPage(2);
+      else if (current === 2) goToPage(3);
+    } else if (deltaY < -50) {
+      // Swipe down: backward
+      if (current === 3) goToPage(2);
+      else if (current === 2) goToPage(1);
     }
   }, [goToPage]);
 
@@ -125,10 +138,10 @@ export default function App() {
       <CurtainLoader onComplete={handleCurtainComplete} />
 
       {/* ==================================================
-          PAGE 1: Base Terminal Layer (Remains visually behind Page 2)
+          PAGE 1: Base Terminal Layer (Always remains mounted behind)
           ================================================== */}
       <div
-        className={`page-one-wrapper ${activePage === 2 ? 'is-inactive' : ''}`}
+        className={`page-one-wrapper ${activePage >= 2 ? 'is-inactive' : ''} ${activePage === 3 ? 'is-deep' : ''}`}
         aria-hidden={activePage !== 1}
       >
         <FaultyTerminal
@@ -157,9 +170,9 @@ export default function App() {
             type="button"
             className="page-one-explore-btn"
             onClick={() => goToPage(2)}
-            aria-label="Scroll, click, or press Enter to view portfolio works"
+            aria-label="Scroll, click, or press Enter to view About page"
           >
-            <span>EXPLORE PORTFOLIO</span>
+            <span>EXPLORE ABOUT</span>
             <span className="page-one-explore-badge">[ENTER]</span>
             <span className="page-one-explore-arrow">▼</span>
           </button>
@@ -167,15 +180,29 @@ export default function App() {
       </div>
 
       {/* ==================================================
-          PAGE 2: Stacked Foreground Layer (Enters from bottom over Page 1)
+          PAGE 2: Stacked Middle Layer (About Me with LightTunnel)
           ================================================== */}
       <div
-        className={`page-two-wrapper ${activePage === 2 ? 'is-active' : ''}`}
+        className={`page-two-wrapper ${activePage >= 2 ? 'is-active' : ''} ${activePage === 3 ? 'is-inactive' : ''}`}
         aria-hidden={activePage !== 2}
       >
         <PageTwo
           ref={pageTwoRef}
           onReturnToPageOne={() => goToPage(1)}
+          onProceedToPageThree={() => goToPage(3)}
+        />
+      </div>
+
+      {/* ==================================================
+          PAGE 3: Stacked Top Layer (FlowingMenu)
+          ================================================== */}
+      <div
+        className={`page-three-wrapper ${activePage === 3 ? 'is-active' : ''}`}
+        aria-hidden={activePage !== 3}
+      >
+        <PageThree
+          ref={pageThreeRef}
+          onReturnToPageTwo={() => goToPage(2)}
         />
       </div>
     </div>

@@ -140,57 +140,70 @@ The interactive background uses a high-performance WebGL / OGL shader pipeline w
 
 ---
 
-## 7. Stacked Full-Screen Page Transition Architecture
+## 7. Stacked Full-Screen 3-Page Architecture
 
-The portfolio implements a **stacked full-screen page model** where pages exist as cinematic spatial planes rather than standard continuous vertical web documents:
+The portfolio implements a **3-tier stacked full-screen page model** where pages exist as cinematic spatial planes layered in 3D depth rather than standard vertical web documents:
 
-- **Page 1 (Base / Terminal Landing)**:
-  - Hosts the `FaultyTerminal` WebGL canvas and initial interactive exploration prompts.
+- **Page 1 (Base Layer: Terminal Landing)**:
+  - Hosts the `FaultyTerminal` WebGL canvas and initial exploration cues.
   - When active: `transform: scale(1) translateY(0); filter: blur(0px) brightness(1); opacity: 1;`.
   - When Page 2 enters: smoothly scales slightly backward (`scale(0.92)`), shifts slightly upward (`translateY(-20px)`), blurs (`blur(8px)`), and dims (`brightness(0.65)` with `opacity: 0.75`).
-  - **Critical Rule**: Page 1 **never disappears** or unmounts; it remains visually active behind Page 2, subtly glowing through Page 2's frosted glass backdrop.
-- **Page 2 (Stacked Foreground Surface)**:
-  - Enters vertically from the bottom of the viewport (`transform: translateY(100%) -> translateY(0)`).
-  - Background surface: Translucent deep void (`rgba(4, 5, 8, 0.88)`) with frosted backdrop blur (`backdrop-filter: blur(22px)`), illuminated by a top phosphor border (`border-top: 1px solid rgba(69, 240, 49, 0.35)`) and glow shadows (`box-shadow: 0 -15px 50px rgba(0, 0, 0, 0.95), 0 -2px 20px rgba(69, 240, 49, 0.2)`).
-  - Becomes the active foreground page with independent inner scrolling when settled.
-- **Transition Dynamics & Gesture Navigation**:
-  - Easing: `cubic-bezier(0.76, 0, 0.24, 1)` with `900ms` duration for ultra-smooth mechanical luxury movement.
-  - Navigation methods:
-    1. Wheel/trackpad scroll (down on Page 1 to enter Page 2; up at top of Page 2 to return).
-    2. Keyboard arrows (`ArrowDown`/`PageDown` to enter, `ArrowUp`/`PageUp` to return).
-    3. Keyboard `Enter` key: Scrolls/cycles through each page (Page 1 -> Page 2 -> Page 1).
-    4. Interactive triggers (Page 1 explore pill button and Page 2 return button).
-    5. Touch swipes.
-  - A transition lock (`~920ms`) prevents wheel stutter or jitter during animation.
+  - When Page 3 enters: moves deeper into background (`scale(0.85)` `translateY(-35px)` with `blur(14px)` and `opacity: 0.5`).
+  - **Critical Rule**: Page 1 **never unmounts**; it remains persistent and physically behind subsequent layers.
 
-### 7.1 Page 2 FlowingMenu Component
-Page 2 hosts the interactive `FlowingMenu` (React Bits component driven by GSAP):
-- **Categories (5 items in strict sequence)**:
-  1. `Languages and Skills`
-  2. `Projects`
-  3. `Certifications`
-  4. `Timeline`
-  5. `Fields of Study`
-- **Color Configuration**:
-  - Item Text Color: `#72e13e`
-  - Base Background: `#120F17`
-  - Marquee Background (hover): `#72e13e`
-  - Marquee Text Color: `#120F17`
-  - Divider Borders: `#72e13e`
-- **Behavior**:
-  - Speed: `15`
-  - Direction-aware hover: marquee rolls in from the closest edge (top or bottom) and loops seamlessly with associated imagery.
-  - Responsive full-screen height distribution: each category occupies an equal flex fraction of the container.
+- **Page 2 (Middle Layer: About Me with LightTunnel)**:
+  - Enters vertically from the bottom of the viewport (`transform: translateY(100%) -> translateY(0)`).
+  - Background surface: Full-viewport WebGL `LightTunnel` shader with 25 outward pulsing fiber cables in terminal green (`#72e13e`).
+  - Layout:
+    - **Header**: Brand mark (`Zeeshaan` `ABOUT // V1.0`) and dual navigation buttons (`▲ RETURN TO TERMINAL`, `WORKS [ENTER] ▼`).
+    - **Left Column**: Prominent `"About Me"` heading in `Cefagu` display font (`#45f031`) with a clean text container for future biography/background text.
+    - **Right Column**: Clean, spacious reserved slot for user photo (strictly **no radial treatments** or vignetting).
+    - **Bottom Cue**: Floating explore button (`CONTINUE TO WORKS [ENTER] ▼`).
+  - When Page 3 enters: smoothly scales backward (`scale(0.92)` `translateY(-20px)`), blurs (`blur(8px)`), and dims (`opacity: 0.75`).
+
+- **Page 3 (Top Foreground Layer: FlowingMenu Works)**:
+  - Enters vertically from the bottom of the viewport over Page 2 (`transform: translateY(100%) -> translateY(0)`).
+  - Hosts the full-screen interactive `FlowingMenu` (GSAP marquee) with 5 categories:
+    1. `Languages and Skills`
+    2. `Projects`
+    3. `Certifications`
+    4. `Timeline`
+    5. `Fields of Study`
+  - Header: `Zeeshaan` `WORKS // V1.0` with return button `▲ RETURN TO ABOUT [ENTER]`.
+
+### 7.1 LightTunnel WebGL Specification
+The About page background utilizes the React Bits `LightTunnel` WebGL shader running via `ogl`:
+- **Core Palette**: `cableColor="#72e13e"`, `pulseColor="#72e13e"`, `tunnelColor="#72e13e"`.
+- **Cable Dynamics**: 25 cables (`cableCount={25}`), thickness `0.44`, rim width `0.44`, speed `0.1` outward flow, pulse speed `1`.
+- **Atmospheric Texture**: Subtle noise grain (`grain={true}`, `grainIntensity={0.17}`), glow `0.65`, opacity `0.41`.
+- **Responsiveness**: Self-resizing via `ResizeObserver`, always filling 100% of the Page 2 viewport behind the content layer.
+
+### 7.2 Transition Dynamics & Gesture Navigation
+- Easing: `cubic-bezier(0.76, 0, 0.24, 1)` with `900ms` duration across all layers.
+- **Forward Cycle (Page 1 → Page 2 → Page 3)**:
+  1. Scroll down on trackpad/mouse wheel.
+  2. Keyboard `ArrowDown` or `PageDown`.
+  3. Mobile touch swipe up (deltaY > 50).
+  4. Keyboard `Enter` key (cycles 1 → 2 → 3 → 1).
+  5. Interactive explore buttons on Page 1 and Page 2.
+- **Backward Cycle (Page 3 → Page 2 → Page 1)**:
+  1. Scroll up on trackpad/mouse wheel.
+  2. Keyboard `ArrowUp` or `PageUp`.
+  3. Mobile touch swipe down (deltaY < -50).
+  4. Keyboard `Shift+Enter`.
+  5. Interactive return buttons on Page 3 and Page 2.
+- A **920ms transition lock** prevents wheel stutter or jitter during animations.
 
 ---
 
 ## 8. Layering & Z-Index Hierarchy
 
-| Layer Level | Z-Index | Purpose |
+| Layer Level | Z-Index | Component / Purpose |
 | :--- | :--- | :--- |
-| **Layer 0** (Base) | Default / `1` | Page 1 base wrapper (`FaultyTerminal` canvas + interactive cues). |
-| **Layer 1** (Foreground Stack) | `50` | Page 2 stacked full-screen surface (`PageTwo` modular container). |
-| **Layer 2** (Curtain Ceremony) | `9999` | Initial `CurtainLoader` overlay (unmounts completely upon user opening). |
+| **Layer 0 (Base)** | `1` | Page 1 base wrapper (`FaultyTerminal` canvas + explore button). |
+| **Layer 1 (Middle Stack)** | `20` | Page 2 stacked About Me layer (`LightTunnel` WebGL canvas + layout). |
+| **Layer 2 (Top Stack)** | `40` | Page 3 stacked Works layer (`FlowingMenu` GSAP marquee). |
+| **Layer 3 (Curtain Ceremony)**| `9999` | Initial `CurtainLoader` overlay (unmounts completely upon user opening). |
 
 ---
 
