@@ -19,9 +19,15 @@ export default function App() {
   const isCurtainActiveRef = useRef(isCurtainActive);
   isCurtainActiveRef.current = isCurtainActive;
 
+  const isSubpageActiveRef = useRef(false);
+
+  const handleSubpageStateChange = useCallback((active) => {
+    isSubpageActiveRef.current = active;
+  }, []);
+
   const goToPage = useCallback((targetPage) => {
     const target = Math.min(3, Math.max(1, targetPage));
-    if (isTransitioningRef.current || target === activePageRef.current) return;
+    if (isTransitioningRef.current || isSubpageActiveRef.current || target === activePageRef.current) return;
 
     isTransitioningRef.current = true;
     activePageRef.current = target;
@@ -40,7 +46,7 @@ export default function App() {
 
   // Wheel and trackpad gesture coordinator across 3 pages
   const handleWheel = useCallback((e) => {
-    if (isTransitioningRef.current) return;
+    if (isTransitioningRef.current || isSubpageActiveRef.current) return;
 
     const current = activePageRef.current;
     if (e.deltaY > 30) {
@@ -62,7 +68,7 @@ export default function App() {
 
   // Keyboard navigation coordinator across 3 pages (Enter, Arrows, Page keys)
   const handleKeyDown = useCallback((e) => {
-    if (isTransitioningRef.current) return;
+    if (isTransitioningRef.current || isSubpageActiveRef.current) return;
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
     const isEnter = e.key === 'Enter' || e.code === 'Enter' || e.code === 'NumpadEnter';
@@ -102,7 +108,7 @@ export default function App() {
   }, []);
 
   const handleTouchEnd = useCallback((e) => {
-    if (isTransitioningRef.current) return;
+    if (isTransitioningRef.current || isSubpageActiveRef.current) return;
     const deltaY = touchStartYRef.current - e.changedTouches[0].clientY;
     const current = activePageRef.current;
 
@@ -203,6 +209,7 @@ export default function App() {
         <PageThree
           ref={pageThreeRef}
           onReturnToPageTwo={() => goToPage(2)}
+          onSubpageStateChange={handleSubpageStateChange}
         />
       </div>
     </div>

@@ -213,6 +213,34 @@ The React Bits `ProfileCard` component is hosted on the right column of Page 2:
 - **Lighting & Sheen**:
   - Subtle holographic shine (`opacity: 0.08`, hover `0.14`) and glare reflection (`opacity: 0.35`) provide 3D tilt responsiveness without obstructing the portrait.
 
+### 7.4 FlowingMenu Subpage Expansion System (Page 3 Works)
+The 5 rows of `FlowingMenu` act as gateways to 5 dedicated full-screen subpages:
+1. `Languages and Skills` → `LanguagesAndSkills.jsx`
+2. `Projects` → `Projects.jsx`
+3. `Certifications` → `Certifications.jsx`
+4. `Timeline` → `Timeline.jsx`
+5. `Fields of Study` → `FieldsOfStudy.jsx`
+
+- **Physical Row Expansion Dynamics**:
+  - Clicking any menu item freezes the menu interactions (`disabled={true}`).
+  - Captures the exact `getBoundingClientRect()` of the selected row.
+  - A fixed `#72e13e` green transition block is placed at the exact `top` and `height` of the clicked row across `100vw`.
+  - Animates outward with GSAP (`top: 0`, `height: 100vh`, duration: `0.65s`, ease: `'power3.inOut'`).
+  - Visually grows outward from the selected row, naturally occluding rows above and below.
+  - Upon completely filling the viewport, mounts and reveals the destination subpage.
+- **Physical Row Contraction (Return)**:
+  - Triggered via the subpage header button (`▲ RETURN TO WORKS`), `Escape`, or `Enter` key.
+  - Subpage unmounts, revealing the full-screen green envelope.
+  - Green block contracts with GSAP from `top: 0, height: 100vh` back into the exact original `top` and `height` of the clicked row slot (`duration: 0.65s`, ease: `'power3.inOut'`).
+  - Upon reaching the row bounds, the block is removed and FlowingMenu interaction is fully restored.
+- **Subpage Shell Typography & Layout**:
+  - Dark background `#120F17` with subtle retro scanline texture.
+  - Centered hero title rendered in `Cefagu` font with glowing `#72e13e` / `#ffffff` ambient glow.
+  - Category status tag (e.g. `WORKS // 01`) and return button with `[ESC]` badge.
+- **Stacked Navigation Lock**:
+  - While a subpage is open or transitioning, global wheel, touch, and page-stacking keys (Enter, Arrows, PageUp/Down) are locked so subpage interaction does not cycle main pages.
+  - Returning to Page 3 restores all 3-page stacked navigation behaviors seamlessly.
+
 ---
 
 ## 8. Layering & Z-Index Hierarchy
@@ -222,6 +250,8 @@ The React Bits `ProfileCard` component is hosted on the right column of Page 2:
 | **Layer 0 (Base)** | `1` | Page 1 base wrapper (`FaultyTerminal` canvas + explore button). |
 | **Layer 1 (Middle Stack)** | `20` | Page 2 stacked About Me layer (`LightTunnel` WebGL canvas + layout). |
 | **Layer 2 (Top Stack)** | `40` | Page 3 stacked Works layer (`FlowingMenu` GSAP marquee). |
+| **Layer 2.1 (Row Expansion)** | `55` | Fixed physical row expansion/contraction transition block (`#72e13e`). |
+| **Layer 2.2 (Subpage Shell)** | `60` | Full-screen destination subpage shell (`Languages`, `Projects`, etc.). |
 | **Layer 3 (Curtain Ceremony)**| `9999` | Initial `CurtainLoader` overlay (unmounts completely upon user opening). |
 
 ---

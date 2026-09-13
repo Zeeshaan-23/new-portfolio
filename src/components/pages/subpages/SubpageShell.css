@@ -1,0 +1,175 @@
+/* ==================================================
+   Subpage Shell Styles: Minimalist full-screen shell
+   ================================================== */
+
+.subpage-container {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #120F17;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  font-family: inherit;
+  color: #ffffff;
+}
+
+/* Subtle retro scanline and ambient grain overlay */
+.subpage-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(114, 225, 62, 0.04) 0%, transparent 70%),
+    linear-gradient(rgba(18, 15, 23, 0) 50%, rgba(0, 0, 0, 0.35) 50%);
+  background-size: 100% 100%, 100% 4px;
+  z-index: 1;
+}
+
+/* Header bar with brand and return action */
+.subpage-header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2.2rem 3rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.subpage-brand {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.subpage-logo {
+  font-family: 'Cefagu', sans-serif;
+  font-size: 1.55rem;
+  color: #72e13e;
+  letter-spacing: 0.12em;
+  text-shadow: 0 0 12px rgba(114, 225, 62, 0.5);
+}
+
+.subpage-category-tag {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.65);
+  padding: 0.25rem 0.65rem;
+  border: 1px solid rgba(114, 225, 62, 0.3);
+  border-radius: 4px;
+  background: rgba(114, 225, 62, 0.08);
+}
+
+/* Return button */
+.subpage-return-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(18, 15, 23, 0.85);
+  border: 1px solid rgba(114, 225, 62, 0.45);
+  border-radius: 30px;
+  padding: 0.7rem 1.45rem;
+  color: #72e13e;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+}
+
+.subpage-return-btn:hover {
+  background: rgba(114, 225, 62, 0.15);
+  border-color: #72e13e;
+  box-shadow: 0 0 25px rgba(114, 225, 62, 0.45);
+  transform: translateY(-2px);
+}
+
+.subpage-return-badge {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  border: 1px solid rgba(114, 225, 62, 0.4);
+  background: rgba(114, 225, 62, 0.12);
+  color: #72e13e;
+}
+
+/* Centered main title section */
+.subpage-main {
+  position: relative;
+  z-index: 5;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.subpage-title {
+  font-family: 'Cefagu', sans-serif;
+  font-size: clamp(2.4rem, 6.5vw, 5.2rem);
+  font-weight: normal;
+  color: #ffffff;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0;
+  padding: 0;
+  line-height: 1.1;
+  text-shadow:
+    0 0 20px rgba(114, 225, 62, 0.45),
+    0 0 40px rgba(114, 225, 62, 0.25);
+  user-select: none;
+}
+
+.subpage-subtitle {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: clamp(0.75rem, 1.2vw, 0.95rem);
+  color: rgba(114, 225, 62, 0.75);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-top: 1.5rem;
+}
+
+/* Footer cue */
+.subpage-footer {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.subpage-footer-hint {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .subpage-header {
+    padding: 1.5rem 1.5rem;
+  }
+  .subpage-logo {
+    font-size: 1.25rem;
+  }
+  .subpage-return-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.72rem;
+  }
+}

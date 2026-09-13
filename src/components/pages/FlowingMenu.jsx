@@ -10,7 +10,9 @@ function FlowingMenu({
   bgColor = '#120F17',
   marqueeBgColor = '#fff',
   marqueeTextColor = '#120F17',
-  borderColor = '#fff'
+  borderColor = '#fff',
+  onItemClick,
+  disabled = false
 }) {
   return (
     <div className="menu-wrap" style={{ backgroundColor: bgColor }}>
@@ -18,12 +20,15 @@ function FlowingMenu({
         {items.map((item, idx) => (
           <MenuItem
             key={idx}
+            idx={idx}
             {...item}
             speed={speed}
             textColor={textColor}
             marqueeBgColor={marqueeBgColor}
             marqueeTextColor={marqueeTextColor}
             borderColor={borderColor}
+            onItemClick={onItemClick}
+            disabled={disabled}
           />
         ))}
       </nav>
@@ -31,7 +36,19 @@ function FlowingMenu({
   );
 }
 
-function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marqueeTextColor, borderColor }) {
+function MenuItem({
+  idx,
+  link,
+  text,
+  image,
+  speed,
+  textColor,
+  marqueeBgColor,
+  marqueeTextColor,
+  borderColor,
+  onItemClick,
+  disabled
+}) {
   const itemRef = useRef(null);
   const marqueeRef = useRef(null);
   const marqueeInnerRef = useRef(null);
@@ -104,7 +121,7 @@ function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marquee
   }, [text, image, repetitions, speed]);
 
   const handleMouseEnter = ev => {
-    if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
+    if (disabled || !itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
     const rect = itemRef.current.getBoundingClientRect();
     const x = ev.clientX - rect.left;
     const y = ev.clientY - rect.top;
@@ -118,7 +135,7 @@ function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marquee
   };
 
   const handleMouseLeave = ev => {
-    if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
+    if (disabled || !itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
     const rect = itemRef.current.getBoundingClientRect();
     const x = ev.clientX - rect.left;
     const y = ev.clientY - rect.top;
@@ -130,11 +147,24 @@ function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marquee
       .to(marqueeInnerRef.current, { y: edge === 'top' ? '101%' : '-101%' }, 0);
   };
 
+  const handleClick = ev => {
+    ev.preventDefault();
+    if (disabled || !itemRef.current) return;
+    const rect = itemRef.current.getBoundingClientRect();
+    onItemClick?.(idx, { link, text, image }, rect);
+  };
+
   return (
-    <div className="menu__item" ref={itemRef} style={{ borderColor }}>
+    <div
+      className="menu__item"
+      ref={itemRef}
+      style={{ borderColor, cursor: disabled ? 'default' : 'pointer' }}
+      onClick={handleClick}
+    >
       <a
         className="menu__item-link"
         href={link}
+        onClick={handleClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         style={{ color: textColor }}
@@ -144,8 +174,8 @@ function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marquee
       <div className="marquee" ref={marqueeRef} style={{ backgroundColor: marqueeBgColor }}>
         <div className="marquee__inner-wrap">
           <div className="marquee__inner" ref={marqueeInnerRef} aria-hidden="true">
-            {[...Array(repetitions)].map((_, idx) => (
-              <div className="marquee__part" key={idx} style={{ color: marqueeTextColor }}>
+            {[...Array(repetitions)].map((_, partIdx) => (
+              <div className="marquee__part" key={partIdx} style={{ color: marqueeTextColor }}>
                 <span>{text}</span>
                 <div className="marquee__img" style={{ backgroundImage: `url(${image})` }} />
               </div>

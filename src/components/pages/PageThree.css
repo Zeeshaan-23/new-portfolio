@@ -96,6 +96,41 @@
   overflow: hidden;
 }
 
+/* Green expansion transition block */
+.page-three-transition-block {
+  position: fixed;
+  left: 0;
+  width: 100vw;
+  background-color: #72e13e;
+  z-index: 55;
+  pointer-events: none;
+  overflow: hidden;
+  will-change: top, height;
+  box-shadow: 0 0 35px rgba(114, 225, 62, 0.45);
+}
+
+/* Subpage layer mounted over Page 3 */
+.page-three-subpage-layer {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 60;
+  overflow: hidden;
+  animation: subpageFadeIn 0.3s ease-out forwards;
+}
+
+@keyframes subpageFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @media (max-width: 768px) {
   .page-three-header {
     padding: 0.75rem 1.25rem;
