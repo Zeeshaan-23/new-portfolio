@@ -1,0 +1,16 @@
+Here is the current state of the project in that exact format:
+
+Loading Screen: Initial curtain loader with sliced display typography (Zeeshaan Suhail) in the Cefagu font that opens vertically upwards like curtains on mouse click or pressing Enter.
+Page 1 (Homepage): FaultyTerminal (React Bits WebGL shader) running as the foundational CRT phosphor-green matrix background with scanlines, subtle glitch, and mouse reaction, equipped with an interactive bottom cue (EXPLORE ABOUT [ENTER] ▼).
+Page Stacking & Navigation System: 3-tier stacked page architecture with smooth 3D depth transitions (cubic-bezier(0.76, 0, 0.24, 1)). When a higher page slides in from the bottom, lower pages blur and scale backward into the background (scale(0.92) / blur(8px) $\rightarrow$ scale(0.85) / blur(14px)), remaining visible behind. Navigable via mouse wheel, trackpad, touch swipe, keyboard (Enter, Shift+Enter, Arrow / Page keys), and on-screen explore/return buttons.
+Page 2 (About Me): Stacked over Page 1 with a full-viewport LightTunnel (React Bits WebGL shader) background in neon phosphor green (#72e13e).
+Left side: About Me heading with an open text area reserved for your bio/description.
+Right side: ProfileCard component (React Bits) featuring your full-bleed natural-color photo taking up 100% of the card, subtle 3D mouse parallax tilt, gentle glass glare, and a slightly subdued brightness (0.85) to blend seamlessly into the ambient dark tunnel—with the </> pattern, name, tagline, and bottom user info pill completely removed for a clean, minimalist portrait card.
+Page 3 (Works): Stacked over Page 2 with a full-screen FlowingMenu (React Bits GSAP marquee) featuring 5 categories:
+Languages and Skills
+Projects
+Certifications
+Timeline
+Fields of Study
+Subpage Expansion Navigation: Clicking any of the 5 FlowingMenu rows freezes the menu and launches a physical #72e13e green expansion block that grows outward from the exact vertical position of the clicked row until it covers the entire viewport, smoothly transitioning into a dedicated full-screen subpage shell (LanguagesAndSkills.jsx, Projects.jsx, Certifications.jsx, Timeline.jsx, FieldsOfStudy.jsx) with centered Cefagu titles, subtle scanlines, and a return action (▲ RETURN TO WORKS [ESC]).
+Reverse Contraction Transition: Pressing Escape, Enter, or clicking RETURN TO WORKS triggers the green transition block to physically shrink from full-screen back into the exact original menu row position, restoring the FlowingMenu and stacked navigation.
