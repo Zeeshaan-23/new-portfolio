@@ -1,0 +1,165 @@
+@font-face {
+  font-family: 'Cefagu';
+  src: url('../../assets/fonts/Cefagu.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Fixed full-screen curtain loading overlay */
+.curtain-loader-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Once clicked, ignore subsequent clicks during animation */
+.curtain-loader-overlay.is-opening {
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Container for the 5 vertical curtain bars */
+.curtain-bars {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+}
+
+/* Each curtain bar spans exactly 20vw width and 100vh, clipping its own portion of the text */
+.curtain-bar {
+  flex: 0 0 20vw;
+  width: 20vw;
+  height: 100vh;
+  background-color: #000000;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 0 0.5px #000000;
+  transform: translateY(0);
+  will-change: transform;
+}
+
+/* Inner content inside each bar: exactly 100vw x 100vh to maintain seamless alignment across panels */
+.curtain-bar-content {
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+/* Offset each bar's content so all 5 panels assemble into one continuous viewport composition */
+.curtain-bar-1 .curtain-bar-content {
+  left: 0vw;
+}
+
+.curtain-bar-2 .curtain-bar-content {
+  left: -20vw;
+}
+
+.curtain-bar-3 .curtain-bar-content {
+  left: -40vw;
+}
+
+.curtain-bar-4 .curtain-bar-content {
+  left: -60vw;
+}
+
+.curtain-bar-5 .curtain-bar-content {
+  left: -80vw;
+}
+
+/* Centered typography layout inside each panel's 100vw canvas */
+.curtain-text-wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.35rem;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+/* Visually dominant main line: "Zeeshaan's Portfolio" */
+.curtain-title-main {
+  color: #45f031;
+  font-family: 'Cefagu', sans-serif;
+  font-size: clamp(2rem, 5vw, 4.2rem);
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+  margin: 0;
+  font-weight: normal;
+  text-shadow: 0 0 16px rgba(69, 240, 49, 0.45);
+  white-space: nowrap;
+}
+
+/* Secondary line positioned directly underneath: "Portfolio" */
+.curtain-title-sub {
+  color: #45f031;
+  font-family: 'Cefagu', sans-serif;
+  font-size: clamp(1.1rem, 2.3vw, 1.9rem);
+  line-height: 1.1;
+  letter-spacing: 0.08em;
+  margin: 0;
+  font-weight: normal;
+  opacity: 0.9;
+  text-shadow: 0 0 10px rgba(69, 240, 49, 0.35);
+  white-space: nowrap;
+}
+
+/* Curtains remain closed until user clicks; animations only activate on .is-opening */
+.curtain-loader-overlay.is-opening .curtain-bar {
+  animation-name: curtainLift;
+  animation-duration: 700ms;
+  animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+  animation-fill-mode: forwards;
+}
+
+/* GROUP 1: Center bar (BAR 3) lifts first */
+.curtain-loader-overlay.is-opening .curtain-bar-3 {
+  animation-delay: 0ms;
+}
+
+/* GROUP 2: Inner bars (BAR 2 & BAR 4) lift simultaneously */
+.curtain-loader-overlay.is-opening .curtain-bar-2,
+.curtain-loader-overlay.is-opening .curtain-bar-4 {
+  animation-delay: 150ms;
+}
+
+/* GROUP 3: Outer bars (BAR 1 & BAR 5) lift simultaneously */
+.curtain-loader-overlay.is-opening .curtain-bar-1,
+.curtain-loader-overlay.is-opening .curtain-bar-5 {
+  animation-delay: 300ms;
+}
+
+/* Purely vertical bottom-to-top lifting keyframes */
+@keyframes curtainLift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+/* Accessibility: Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .curtain-loader-overlay.is-opening .curtain-bar {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+  }
+}
