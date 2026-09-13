@@ -1,5 +1,7 @@
 import { forwardRef } from 'react';
 import LightTunnel from '../tunnel/LightTunnel';
+import ProfileCard from '../card/ProfileCard';
+import profilePhoto from '../../assets/profile.jpg';
 import './PageTwo.css';
 
 const PageTwo = forwardRef(function PageTwo({ onReturnToPageOne, onProceedToPageThree }, ref) {
@@ -70,26 +72,27 @@ const PageTwo = forwardRef(function PageTwo({ onReturnToPageOne, onProceedToPage
         </div>
       </header>
 
-      {/* Main Content Layout: About Me (Left) & Reserved Photo (Right) */}
+      {/* Main Content Layout: About Me (Left) & ProfileCard (Right) */}
       <main className="page-two-main">
         <div className="page-two-grid">
-          {/* Left Column: Heading & Clear Text Area */}
+          {/* Left Column: Heading & Empty Text Area */}
           <section className="about-content-col">
             <h2 className="about-heading">About Me</h2>
             <div className="about-text-area">
-              <p className="about-placeholder-text">
-                [Biography and background text will be placed here.]
-              </p>
+              {/* Paragraph area kept empty for now */}
             </div>
           </section>
 
-          {/* Right Column: Reserved Photo Slot */}
-          <section className="about-photo-col" aria-label="Reserved photo section">
-            <div className="about-photo-container">
-              <div className="about-photo-slot">
-                <span className="about-photo-indicator">PHOTO // RESERVED SLOT</span>
-              </div>
-            </div>
+          {/* Right Column: React Bits ProfileCard */}
+          <section className="about-photo-col" aria-label="Profile card section">
+            <ProfileCard
+              avatarUrl={profilePhoto}
+              showUserInfo={false}
+              enableTilt={true}
+              enableMobileTilt={false}
+              behindGlowEnabled
+              innerGradient="linear-gradient(145deg,#60496e8c 0%,#71C4FF44 100%)"
+            />
           </section>
         </div>
       </main>

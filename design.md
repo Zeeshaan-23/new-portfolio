@@ -151,13 +151,17 @@ The portfolio implements a **3-tier stacked full-screen page model** where pages
   - When Page 3 enters: moves deeper into background (`scale(0.85)` `translateY(-35px)` with `blur(14px)` and `opacity: 0.5`).
   - **Critical Rule**: Page 1 **never unmounts**; it remains persistent and physically behind subsequent layers.
 
-- **Page 2 (Middle Layer: About Me with LightTunnel)**:
+- **Page 2 (Middle Layer: About Me with LightTunnel & ProfileCard)**:
   - Enters vertically from the bottom of the viewport (`transform: translateY(100%) -> translateY(0)`).
   - Background surface: Full-viewport WebGL `LightTunnel` shader with 25 outward pulsing fiber cables in terminal green (`#72e13e`).
   - Layout:
     - **Header**: Brand mark (`Zeeshaan` `ABOUT // V1.0`) and dual navigation buttons (`▲ RETURN TO TERMINAL`, `WORKS [ENTER] ▼`).
-    - **Left Column**: Prominent `"About Me"` heading in `Cefagu` display font (`#45f031`) with a clean text container for future biography/background text.
-    - **Right Column**: Clean, spacious reserved slot for user photo (strictly **no radial treatments** or vignetting).
+    - **Left Column**: Prominent `"About Me"` heading in `Cefagu` display font (`#45f031`) with a clean container reserved for future biography/background text.
+    - **Right Column**: React Bits `ProfileCard` component featuring:
+      - Clean 3D mouse tilt and glare physics.
+      - Original gradient styling (`linear-gradient(145deg,#60496e8c 0%,#71C4FF44 100%)`) and behind glow.
+      - **Untouched User Photo**: The photo is preserved in natural, original full color without shading, tinting, color grading, or overlays (`mix-blend-mode: normal`, `filter: none`). Strictly no radial vignette treatments.
+      - **Phosphor Green `</>` Icon Pattern**: The repeating code tag pattern reflects the portfolio's retro terminal aesthetic using `#45f031` / `#72e13e` with subtle phosphor bloom.
     - **Bottom Cue**: Floating explore button (`CONTINUE TO WORKS [ENTER] ▼`).
   - When Page 3 enters: smoothly scales backward (`scale(0.92)` `translateY(-20px)`), blurs (`blur(8px)`), and dims (`opacity: 0.75`).
 
@@ -193,6 +197,21 @@ The About page background utilizes the React Bits `LightTunnel` WebGL shader run
   4. Keyboard `Shift+Enter`.
   5. Interactive return buttons on Page 3 and Page 2.
 - A **920ms transition lock** prevents wheel stutter or jitter during animations.
+
+### 7.3 ProfileCard Specifications (Page 2 About Me)
+The React Bits `ProfileCard` component is hosted on the right column of Page 2:
+- **Card Framing & Photo Fit**:
+  - The photo occupies 100% of the card height and width (`object-fit: cover`, `object-position: center 10%`), completely eliminating empty voids.
+  - The photo remains in its natural color without tinting, shading, color-grading, or gradient overlays (`mix-blend-mode: normal !important; filter: none !important;`).
+- **Brightness & Visual Harmonization**:
+  - The card brightness is slightly subdued (`filter: brightness(0.85);`, hover `brightness(0.92);`) to blend naturally with the moody dark-green LightTunnel environment rather than standing out harshly.
+- **Pure Minimalist Portrait Card**:
+  - The `</>` symbol overlay is completely removed.
+  - The top name and tagline text are completely removed.
+  - The bottom glass user info pill (`@zeeshaan`, `Online`, `Contact Me`) is completely removed.
+  - The card presents a clean, full-bleed 3D photo portrait with subtle glare reflection and smooth tilt responsiveness.
+- **Lighting & Sheen**:
+  - Subtle holographic shine (`opacity: 0.08`, hover `0.14`) and glare reflection (`opacity: 0.35`) provide 3D tilt responsiveness without obstructing the portrait.
 
 ---
 

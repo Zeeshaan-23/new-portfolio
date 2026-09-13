@@ -144,64 +144,22 @@
 }
 
 .about-text-area {
-  background: rgba(18, 15, 23, 0.65);
+  min-height: 160px;
+  background: rgba(18, 15, 23, 0.5);
   backdrop-filter: blur(14px);
-  border: 1px solid rgba(114, 225, 62, 0.28);
+  border: 1px dashed rgba(114, 225, 62, 0.22);
   border-radius: 12px;
   padding: 2rem 2.25rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(114, 225, 62, 0.04);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(114, 225, 62, 0.03);
 }
 
-.about-placeholder-text {
-  font-family: var(--sans, system-ui, sans-serif);
-  font-size: 1.05rem;
-  line-height: 1.7;
-  color: rgba(229, 231, 235, 0.8);
-  margin: 0;
-  letter-spacing: 0.02em;
-}
-
-/* Right Column: Reserved Photo Slot (No radial treatment) */
+/* Right Column: React Bits ProfileCard */
 .about-photo-col {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.about-photo-container {
-  width: 100%;
-  max-width: 420px;
-  aspect-ratio: 4 / 5;
-  background: rgba(18, 15, 23, 0.5);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(114, 225, 62, 0.35);
-  border-radius: 14px;
-  padding: 0.85rem;
-  box-sizing: border-box;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(114, 225, 62, 0.1);
-  transition: border-color 0.3s ease;
-}
-
-.about-photo-slot {
-  width: 100%;
-  height: 100%;
-  border: 1px dashed rgba(114, 225, 62, 0.3);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.3);
-}
-
-.about-photo-indicator {
-  font-family: ui-monospace, Consolas, monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
-  color: rgba(114, 225, 62, 0.65);
-  padding: 0.4rem 0.8rem;
-  border: 1px solid rgba(114, 225, 62, 0.25);
-  border-radius: 4px;
-  background: rgba(114, 225, 62, 0.05);
+  position: relative;
+  z-index: 5;
 }
 
 /* Bottom Explore Cue Button */
