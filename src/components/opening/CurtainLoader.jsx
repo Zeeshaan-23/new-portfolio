@@ -1,11 +1,12 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { portfolioData } from '../../data/portfolioData';
 import './CurtainLoader.css';
 
 /**
  * CurtainLoader Component
  *
  * Remains fully closed on initial page load.
- * Displays "Zeeshaan's Portfolio" and "Portfolio" painted directly onto the 5 curtain panels.
+ * Displays "Shaik Zeeshaan Suhail" and "Portfolio" painted directly onto the 5 curtain panels.
  * The text is clipped across the five individual panels so each panel carries its slice
  * of the text upward when lifting.
  *
@@ -78,7 +79,7 @@ export default function CurtainLoader({ onComplete }) {
   const renderPanelTextSlice = () => (
     <div className="curtain-bar-content">
       <div className="curtain-text-wrapper">
-        <h1 className="curtain-title-main">Zeeshaan's Portfolio</h1>
+        <h1 className="curtain-title-main">{portfolioData.personal.name}</h1>
         <p className="curtain-title-sub">Portfolio</p>
       </div>
     </div>
@@ -95,7 +96,7 @@ export default function CurtainLoader({ onComplete }) {
           handleClick();
         }
       }}
-      aria-label="Click anywhere to enter Zeeshaan's Portfolio"
+      aria-label={`Click anywhere or press Enter to enter ${portfolioData.personal.name}'s Portfolio`}
     >
       {/* 5 Vertical Black Curtain Panels with painted text slices */}
       <div className="curtain-bars" aria-hidden="true">

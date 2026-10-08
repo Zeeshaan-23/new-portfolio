@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
+import { portfolioData } from '../../../data/portfolioData';
 import './SubpageShell.css';
 
 export default function FieldsOfStudy({ onReturn }) {
+  const { personal, fieldsOfStudy } = portfolioData;
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' || e.key === 'Enter') {
@@ -19,8 +22,13 @@ export default function FieldsOfStudy({ onReturn }) {
       {/* Top Header */}
       <header className="subpage-header">
         <div className="subpage-brand">
-          <span className="subpage-logo">Zeeshaan</span>
+          <span className="subpage-logo">{personal.shortName}</span>
           <span className="subpage-category-tag">WORKS // 05</span>
+        </div>
+
+        <div className="subpage-header-title-group">
+          <h1 className="subpage-header-title">FIELDS OF STUDY</h1>
+          <div className="subpage-header-subtitle">ACADEMIC DISCIPLINES // DOMAIN SPECIALIZATIONS</div>
         </div>
 
         <button
@@ -35,10 +43,33 @@ export default function FieldsOfStudy({ onReturn }) {
         </button>
       </header>
 
-      {/* Centered Page Title */}
+      {/* Main Content Area */}
       <main className="subpage-main">
-        <h1 className="subpage-title">FIELDS OF STUDY</h1>
-        <div className="subpage-subtitle">ACADEMIC DISCIPLINES // RESEARCH DOMAINS</div>
+
+
+        <div className="subpage-content-scroll">
+          <div className="fields-grid">
+            {fieldsOfStudy.map((field) => (
+              <article key={field.id} className="field-card" aria-label={field.title}>
+                <div>
+                  <div className="field-card-header">
+                    <h2 className="field-card-title">{field.title}</h2>
+                    <span className="field-tag-badge">{field.tag}</span>
+                  </div>
+                  <p className="field-desc">{field.description}</p>
+                </div>
+
+                <div className="field-skills-wrap" aria-label="Supporting Technologies & Coursework">
+                  {field.skills.map((skill) => (
+                    <span key={skill} className="field-skill-pill">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
       </main>
 
       {/* Footer */}

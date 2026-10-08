@@ -13,6 +13,7 @@ import imgProjects from '../../assets/pictures/736d1fc83f95cfbe0e668a50f28279c7.
 import imgCertifications from '../../assets/pictures/glass-palette.webp';
 import imgTimeline from '../../assets/pictures/Master1.jpg';
 import imgFields from '../../assets/pictures/e094cf85c35a3a7763f3df418b1d776c.jpg';
+import { portfolioData } from '../../data/portfolioData';
 
 const demoItems = [
   { key: 'languages', link: '#', text: 'Languages and Skills', image: imgLanguages },
@@ -144,7 +145,7 @@ const PageThree = forwardRef(function PageThree({ onReturnToPageTwo, onSubpageSt
       {/* Top Header / Return to Page 2 */}
       <header className="page-three-header">
         <div className="page-three-brand">
-          <span className="page-three-logo">Zeeshaan</span>
+          <span className="page-three-logo">{portfolioData.personal.shortName}</span>
           <span className="page-three-status">WORKS // V1.0</span>
         </div>
 

@@ -2,9 +2,14 @@ import { forwardRef } from 'react';
 import LightTunnel from '../tunnel/LightTunnel';
 import ProfileCard from '../card/ProfileCard';
 import profilePhoto from '../../assets/profile.jpg';
+import { portfolioData } from '../../data/portfolioData';
 import './PageTwo.css';
 
 const PageTwo = forwardRef(function PageTwo({ onReturnToPageOne, onProceedToPageThree }, ref) {
+  const { personal, education, experience } = portfolioData;
+  const currentRole = experience.find(e => e.isCurrent);
+  const previousRole = experience.find(e => !e.isCurrent);
+
   return (
     <div ref={ref} className="page-two-container">
       {/* Background: Full-viewport LightTunnel */}
@@ -44,7 +49,7 @@ const PageTwo = forwardRef(function PageTwo({ onReturnToPageOne, onProceedToPage
       {/* Top Header / Navigation */}
       <header className="page-two-header">
         <div className="page-two-brand">
-          <span className="page-two-logo">Zeeshaan</span>
+          <span className="page-two-logo">{personal.shortName}</span>
           <span className="page-two-status">ABOUT // V1.0</span>
         </div>
 
@@ -77,13 +82,18 @@ const PageTwo = forwardRef(function PageTwo({ onReturnToPageOne, onProceedToPage
         <div className="page-two-grid">
           {/* Left Column: Heading & About Description */}
           <section className="about-content-col">
-            <h2 className="about-heading">About Me</h2>
+            <div className="about-heading-row">
+              <h2 className="about-heading">About Me</h2>
+              <span className="about-role-pill">{currentRole.role}</span>
+            </div>
+
             <div className="about-text-area">
               <p className="about-bio-p">
-                Hey, I’m <strong>Zeeshaan</strong> — a Computer Science student at <strong>SRM University AP</strong> building full-stack applications and wrangling backend infrastructure without setting production on fire. From configuring <strong>IBM DataPower Gateways</strong> and enterprise security policies for production clients at <strong>Bottrion Systems</strong>, to architecting platforms like <strong>eSign</strong> (Django, React, Redis, Celery), I like building systems that actually hold up under real-world pressure.
+                I am a Computer Science and Engineering student at <strong>{education.institution}</strong> (CGPA: <strong>{education.cgpa}</strong>) and currently a <strong>{currentRole.role} at {currentRole.company}</strong>, building Next.js and React applications, conducting security audits, and streamlining releases with AI-driven testing. Previously at <strong>{previousRole.company}</strong>, I engineered the multi-signer <strong>eSign Platform</strong> and configured enterprise <strong>IBM DataPower Gateways</strong>.
               </p>
+
               <p className="about-bio-p">
-                I heavily leverage modern <strong>AI tools and systems</strong> to aggressively fast-track my learning curve and strip out development friction — because why spend three hours fighting boilerplate when you can iterate and ship at warp speed? When I'm not architecting APIs or probing <strong>TryHackMe</strong> labs, the mission is simple: <strong>build fast, ship even faster</strong>, and never push directly to <code>main</code> on a Friday.
+                Give me ai and half an hour and ill get it done. Outside of full-stack engineering and backend systems, I actively solve algorithmic problems on LeetCode and explore hands-on cybersecurity labs on TryHackMe.
               </p>
             </div>
           </section>
@@ -92,6 +102,9 @@ const PageTwo = forwardRef(function PageTwo({ onReturnToPageOne, onProceedToPage
           <section className="about-photo-col" aria-label="Profile card section">
             <ProfileCard
               avatarUrl={profilePhoto}
+              name={personal.name}
+              title={currentRole.role}
+              handle="Zeeshaan-23"
               showUserInfo={false}
               enableTilt={true}
               enableMobileTilt={false}

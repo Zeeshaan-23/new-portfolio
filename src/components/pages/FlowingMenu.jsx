@@ -120,6 +120,23 @@ function MenuItem({
     };
   }, [text, image, repetitions, speed]);
 
+  const resetMarquee = () => {
+    if (!marqueeRef.current || !marqueeInnerRef.current) return;
+    gsap.killTweensOf([marqueeRef.current, marqueeInnerRef.current]);
+    gsap.set(marqueeRef.current, { y: '101%' });
+    gsap.set(marqueeInnerRef.current, { y: '-101%' });
+  };
+
+  useEffect(() => {
+    if (disabled) {
+      resetMarquee();
+    } else {
+      if (itemRef.current && !itemRef.current.matches(':hover')) {
+        resetMarquee();
+      }
+    }
+  }, [disabled]);
+
   const handleMouseEnter = ev => {
     if (disabled || !itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
     const rect = itemRef.current.getBoundingClientRect();
@@ -127,6 +144,7 @@ function MenuItem({
     const y = ev.clientY - rect.top;
     const edge = findClosestEdge(x, y, rect.width, rect.height);
 
+    gsap.killTweensOf([marqueeRef.current, marqueeInnerRef.current]);
     gsap
       .timeline({ defaults: animationDefaults })
       .set(marqueeRef.current, { y: edge === 'top' ? '-101%' : '101%' }, 0)
@@ -135,12 +153,17 @@ function MenuItem({
   };
 
   const handleMouseLeave = ev => {
-    if (disabled || !itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
+    if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
+    if (disabled) {
+      resetMarquee();
+      return;
+    }
     const rect = itemRef.current.getBoundingClientRect();
     const x = ev.clientX - rect.left;
     const y = ev.clientY - rect.top;
     const edge = findClosestEdge(x, y, rect.width, rect.height);
 
+    gsap.killTweensOf([marqueeRef.current, marqueeInnerRef.current]);
     gsap
       .timeline({ defaults: animationDefaults })
       .to(marqueeRef.current, { y: edge === 'top' ? '-101%' : '101%' }, 0)
@@ -150,6 +173,7 @@ function MenuItem({
   const handleClick = ev => {
     ev.preventDefault();
     if (disabled || !itemRef.current) return;
+    resetMarquee();
     const rect = itemRef.current.getBoundingClientRect();
     onItemClick?.(idx, { link, text, image }, rect);
   };
@@ -160,13 +184,13 @@ function MenuItem({
       ref={itemRef}
       style={{ borderColor, cursor: disabled ? 'default' : 'pointer' }}
       onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <a
         className="menu__item-link"
         href={link}
         onClick={handleClick}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
         style={{ color: textColor }}
       >
         {text}
