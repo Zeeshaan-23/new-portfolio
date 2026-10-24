@@ -1,20 +1,9 @@
-import profilePhoto from '../assets/profile.jpg';
-
 export default function Sidebar({ personal, sections, activeSection }) {
   return (
     <aside className="sidebar">
       <div className="identity">
-        <img
-          className="identity-photo"
-          src={profilePhoto}
-          width="76"
-          height="76"
-          alt={`Portrait of ${personal.name}`}
-        />
-        <div className="identity-copy">
-          <h1>{personal.name}</h1>
-          <p className="identity-headline">{personal.headline}</p>
-        </div>
+        <h1>{personal.name}</h1>
+        <p className="identity-headline">{personal.headline}</p>
       </div>
 
       <div className="identity-meta">

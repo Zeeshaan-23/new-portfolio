@@ -86,8 +86,8 @@ function createSnapshot(originX, originY) {
   clone.removeAttribute('id');
   clone.querySelectorAll('[id]').forEach((element) => element.removeAttribute('id'));
 
-  const sourcePhoto = root.querySelector('.identity-photo');
-  const clonePhoto = clone.querySelector('.identity-photo');
+  const sourcePhoto = root.querySelector('.about-photo img');
+  const clonePhoto = clone.querySelector('.about-photo img');
   if (sourcePhoto && clonePhoto) {
     clonePhoto.style.filter = window.getComputedStyle(sourcePhoto).filter;
   }

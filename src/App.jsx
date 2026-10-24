@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { portfolioData } from './data/portfolioData';
 import { useTheme } from './hooks/useTheme';
+import profilePhoto from './assets/profile.jpg';
 import Topbar from './components/Topbar';
 import Sidebar from './components/Sidebar';
 import ActivityDashboard from './components/ActivityDashboard';
@@ -155,23 +156,39 @@ export default function App() {
         skip to content
       </a>
 
-      <Topbar theme={theme} onToggleTheme={toggleTheme} />
+      <Topbar
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        sections={SECTIONS}
+        activeSection={activeSection}
+      />
       <Sidebar personal={personal} sections={SECTIONS} activeSection={activeSection} />
 
       <main className="main" id="main" tabIndex={-1}>
         <div className="content">
           <Section id="about" index="01" title="about" path="~/about">
-            <div className="prose">
-              <p>
-                I am a computer science student at <strong>{education.institution}</strong> and a
-                full-stack developer. I build React and Next.js interfaces, Django APIs, and the
-                systems behind them.
-              </p>
-              <p>
-                Most recently, I interned at <strong>{latestRole.company}</strong> on Bhojpatra&apos;s
-                booking frontend and security audit. Before that, I built an e-signature platform at{' '}
-                <strong>{previousRole.company}</strong>.
-              </p>
+            <div className="about-layout">
+              <div className="prose">
+                <p>
+                  I am a computer science student at <strong>{education.institution}</strong> and a
+                  full-stack developer. I build React and Next.js interfaces, Django APIs, and the
+                  systems behind them.
+                </p>
+                <p>
+                  Most recently, I interned at <strong>{latestRole.company}</strong> on Bhojpatra&apos;s
+                  booking frontend and security audit. Before that, I built an e-signature platform
+                  at <strong>{previousRole.company}</strong>.
+                </p>
+              </div>
+
+              <figure className="about-photo">
+                <img
+                  src={profilePhoto}
+                  width="260"
+                  height="320"
+                  alt={`Portrait of ${personal.name}`}
+                />
+              </figure>
             </div>
 
             <ActivityDashboard github={personal.github} leetcode={personal.leetcode} />
