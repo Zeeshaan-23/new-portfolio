@@ -1,6 +1,6 @@
 :root {
-  --topbar-h: 56px;
-  --rail-w: 288px;
+  --topbar-h: 60px;
+  --rail-w: 300px;
   --content-max: 1120px;
   --gutter: 56px;
 
@@ -30,7 +30,7 @@
 
   color-scheme: dark;
   font-family: var(--mono);
-  font-size: 16px;
+  font-size: 17.5px;
   line-height: 1.6;
   color: var(--fg);
   background-color: var(--bg);
@@ -86,7 +86,7 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   font-family: var(--mono);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.65;
   color: var(--fg);
   background-color: var(--bg);

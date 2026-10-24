@@ -1,5 +1,5 @@
 :root {
-  --cal-cell: 10px;
+  --cal-cell: 11px;
   --cal-gap: 3px;
   --cal-0: #19211a;
   --cal-1: #24432a;
@@ -67,7 +67,7 @@ html[data-theme='light'] {
   flex: none;
   align-items: center;
   gap: 8px;
-  height: 30px;
+  height: 32px;
   padding: 0 10px;
   color: var(--muted);
   font-size: 0.63rem;
@@ -106,8 +106,8 @@ html[data-theme='light'] {
   display: none;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   color: var(--muted);
   border: 1px solid var(--rule-strong);
 }
@@ -328,12 +328,12 @@ html[data-theme='light'] {
 
 .main > .content {
   flex: 1;
-  padding-top: 72px;
+  padding-top: 76px;
   padding-bottom: 28px;
 }
 
 .section {
-  padding-top: 66px;
+  padding-top: 72px;
 }
 
 .section:first-child {
@@ -376,8 +376,8 @@ html[data-theme='light'] {
 /* About */
 .about-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 260px;
-  gap: 42px;
+  grid-template-columns: minmax(0, 1fr) 284px;
+  gap: 44px;
   align-items: start;
 }
 
@@ -527,8 +527,8 @@ html[data-theme='light'] .about-photo img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   color: var(--muted);
   font-size: 0.82rem;
   line-height: 1;
@@ -639,7 +639,7 @@ html[data-theme='light'] .about-photo img {
   margin-bottom: 4px;
   overflow: visible;
   color: var(--dim);
-  font-size: 8px;
+  font-size: 9px;
   line-height: 1;
 }
 
@@ -726,8 +726,8 @@ html[data-theme='light'] .about-photo img {
 }
 
 .cal-legend .cal-cell {
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
 }
 
 .calendar-loading {
@@ -808,7 +808,7 @@ html[data-theme='light'] .about-photo img {
 
 /* Continuous experience timeline */
 .timeline {
-  --date-col: 168px;
+  --date-col: 188px;
   --timeline-gap: 36px;
   position: relative;
 }
@@ -1256,7 +1256,7 @@ html[data-theme='light'] .about-photo img {
 
 @media (max-width: 1200px) {
   :root {
-    --rail-w: 262px;
+    --rail-w: 274px;
     --gutter: 42px;
   }
 
@@ -1266,8 +1266,8 @@ html[data-theme='light'] .about-photo img {
   }
 
   .about-layout {
-    grid-template-columns: minmax(0, 1fr) 220px;
-    gap: 32px;
+    grid-template-columns: minmax(0, 1fr) 244px;
+    gap: 34px;
   }
 }
 
@@ -1310,8 +1310,8 @@ html[data-theme='light'] .about-photo img {
   }
 
   .about-layout {
-    grid-template-columns: minmax(0, 1fr) 240px;
-    gap: 36px;
+    grid-template-columns: minmax(0, 1fr) 264px;
+    gap: 38px;
   }
 
   .sidebar-foot {
@@ -1359,7 +1359,7 @@ html[data-theme='light'] .about-photo img {
   }
 
   .about-photo {
-    max-width: 300px;
+    max-width: 324px;
   }
 
   .about-photo img {
@@ -1516,7 +1516,7 @@ html[data-theme='light'] .about-photo img {
   }
 
   .about-photo {
-    max-width: 272px;
+    max-width: 292px;
   }
 
   .activity-head {
