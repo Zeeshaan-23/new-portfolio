@@ -4,9 +4,24 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Portfolio of Shaik Zeeshaan Suhail — Full-Stack Developer Intern and Computer Science Student at SRM University AP." />
+    <meta name="description" content="Portfolio of Shaik Zeeshaan Suhail — Full-Stack Developer and Computer Science Student at SRM University AP." />
     <meta name="author" content="Shaik Zeeshaan Suhail" />
-    <title>Shaik Zeeshaan Suhail | Portfolio</title>
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0a0c0b" />
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('zsh.theme');
+          var theme = stored === 'light' || stored === 'dark'
+            ? stored
+            : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+          document.documentElement.dataset.theme = theme;
+        } catch (error) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+    <title>Shaik Zeeshaan Suhail / Full-Stack Developer</title>
   </head>
   <body>
     <div id="root"></div>

@@ -1,229 +1,255 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
-import CurtainLoader from './components/opening/CurtainLoader';
-import FaultyTerminal from './components/terminal/FaultyTerminal';
-import PageTwo from './components/pages/PageTwo';
-import PageThree from './components/pages/PageThree';
+import { useEffect, useState } from 'react';
+import { portfolioData } from './data/portfolioData';
+import { useTheme } from './hooks/useTheme';
+import Topbar from './components/Topbar';
+import Sidebar from './components/Sidebar';
+import ActivityDashboard from './components/ActivityDashboard';
+import ExperienceTimeline from './components/ExperienceTimeline';
+import ProjectShowcase from './components/ProjectShowcase';
 import './App.css';
 
-export default function App() {
-  const [activePage, setActivePage] = useState(1);
-  const [isCurtainActive, setIsCurtainActive] = useState(true);
-  const isTransitioningRef = useRef(false);
-  const pageTwoRef = useRef(null);
-  const pageThreeRef = useRef(null);
-  const touchStartYRef = useRef(0);
+const { personal, education, experience, projects, technicalSkills, certifications, achievements } =
+  portfolioData;
 
-  const activePageRef = useRef(activePage);
-  activePageRef.current = activePage;
+const SECTIONS = [
+  { id: 'about', label: 'about', index: '01', path: '~/about' },
+  { id: 'experience', label: 'experience', index: '02', path: '~/experience' },
+  { id: 'projects', label: 'projects', index: '03', path: '~/projects' },
+  { id: 'skills', label: 'skills', index: '04', path: '~/skills' },
+  { id: 'education', label: 'education', index: '05', path: '~/education' },
+  { id: 'certifications', label: 'certifications', index: '06', path: '~/credentials' }
+];
 
-  const isCurtainActiveRef = useRef(isCurtainActive);
-  isCurtainActiveRef.current = isCurtainActive;
-
-  const isSubpageActiveRef = useRef(false);
-
-  const handleSubpageStateChange = useCallback((active) => {
-    isSubpageActiveRef.current = active;
-  }, []);
-
-  const goToPage = useCallback((targetPage) => {
-    const target = Math.min(3, Math.max(1, targetPage));
-    if (isTransitioningRef.current || isSubpageActiveRef.current || target === activePageRef.current) return;
-
-    isTransitioningRef.current = true;
-    activePageRef.current = target;
-    setActivePage(target);
-
-    // Release transition lock after animation settles (900ms duration)
-    setTimeout(() => {
-      isTransitioningRef.current = false;
-    }, 920);
-  }, []);
-
-  const handleCurtainComplete = useCallback(() => {
-    isCurtainActiveRef.current = false;
-    setIsCurtainActive(false);
-  }, []);
-
-  // Wheel and trackpad gesture coordinator across 3 pages
-  const handleWheel = useCallback((e) => {
-    if (isTransitioningRef.current || isSubpageActiveRef.current) return;
-
-    const current = activePageRef.current;
-    if (e.deltaY > 30) {
-      // Forward scroll
-      if (current === 1) {
-        goToPage(2);
-      } else if (current === 2) {
-        goToPage(3);
-      }
-    } else if (e.deltaY < -30) {
-      // Backward scroll
-      if (current === 3) {
-        goToPage(2);
-      } else if (current === 2) {
-        goToPage(1);
-      }
-    }
-  }, [goToPage]);
-
-  // Keyboard navigation coordinator across 3 pages (Enter, Arrows, Page keys)
-  const handleKeyDown = useCallback((e) => {
-    if (isTransitioningRef.current || isSubpageActiveRef.current) return;
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
-    const isEnter = e.key === 'Enter' || e.code === 'Enter' || e.code === 'NumpadEnter';
-
-    if (isEnter) {
-      if (isCurtainActiveRef.current) return;
-      e.preventDefault();
-      const current = activePageRef.current;
-      if (e.shiftKey) {
-        // Shift+Enter navigates backward
-        if (current === 3) goToPage(2);
-        else if (current === 2) goToPage(1);
-      } else {
-        // Enter navigates forward in cycle: 1 -> 2 -> 3 -> 1
-        if (current === 1) goToPage(2);
-        else if (current === 2) goToPage(3);
-        else if (current === 3) goToPage(1);
-      }
-      return;
-    }
-
-    const current = activePageRef.current;
-    if (e.key === 'ArrowDown' || e.key === 'PageDown') {
-      e.preventDefault();
-      if (current === 1) goToPage(2);
-      else if (current === 2) goToPage(3);
-    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-      e.preventDefault();
-      if (current === 3) goToPage(2);
-      else if (current === 2) goToPage(1);
-    }
-  }, [goToPage]);
-
-  // Touch gesture coordinator for mobile / trackpads
-  const handleTouchStart = useCallback((e) => {
-    touchStartYRef.current = e.touches[0].clientY;
-  }, []);
-
-  const handleTouchEnd = useCallback((e) => {
-    if (isTransitioningRef.current || isSubpageActiveRef.current) return;
-    const deltaY = touchStartYRef.current - e.changedTouches[0].clientY;
-    const current = activePageRef.current;
-
-    if (deltaY > 50) {
-      // Swipe up: forward
-      if (current === 1) goToPage(2);
-      else if (current === 2) goToPage(3);
-    } else if (deltaY < -50) {
-      // Swipe down: backward
-      if (current === 3) goToPage(2);
-      else if (current === 2) goToPage(1);
-    }
-  }, [goToPage]);
+function useActiveSection() {
+  const [activeSection, setActiveSection] = useState(() => {
+    const hash = window.location.hash.slice(1);
+    return SECTIONS.some((section) => section.id === hash) ? hash : SECTIONS[0].id;
+  });
 
   useEffect(() => {
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
-    }
-    window.scrollTo(0, 0);
+    let frame = 0;
 
-    window.addEventListener('keydown', handleKeyDown, true);
-    return () => window.removeEventListener('keydown', handleKeyDown, true);
-  }, [handleKeyDown]);
+    const updateActiveSection = () => {
+      frame = 0;
+      const marker = 150;
+      let current = SECTIONS[0].id;
 
+      for (const section of SECTIONS) {
+        const element = document.getElementById(section.id);
+        if (element && element.getBoundingClientRect().top <= marker) {
+          current = section.id;
+        }
+      }
+
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 8) {
+        current = SECTIONS[SECTIONS.length - 1].id;
+      }
+
+      setActiveSection((previous) => (previous === current ? previous : current));
+    };
+
+    const handleScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(updateActiveSection);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll);
+
+    const initialHash = window.location.hash.slice(1);
+    const initialTarget = SECTIONS.some((section) => section.id === initialHash)
+      ? document.getElementById(initialHash)
+      : null;
+
+    const initialFrame = window.requestAnimationFrame(() => {
+      if (initialTarget) {
+        const previousScrollBehavior = document.documentElement.style.scrollBehavior;
+        document.documentElement.style.scrollBehavior = 'auto';
+        initialTarget.scrollIntoView({ block: 'start' });
+        document.documentElement.style.scrollBehavior = previousScrollBehavior;
+      }
+
+      updateActiveSection();
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.cancelAnimationFrame(initialFrame);
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, []);
+
+  return activeSection;
+}
+
+function Section({ id, index, title, path, children }) {
   return (
-    <div
-      className="app-container"
-      onWheel={handleWheel}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
-      {/* Initial Opening Curtain Ceremony */}
-      <CurtainLoader onComplete={handleCurtainComplete} />
+    <section className="section" id={id} aria-labelledby={`${id}-heading`}>
+      <header className="section-head">
+        <h2 id={`${id}-heading`}>
+          <span className="section-index">{index}</span>
+          {title}
+        </h2>
+        <span className="section-path" aria-hidden="true">
+          {path}
+        </span>
+      </header>
+      {children}
+    </section>
+  );
+}
 
-      {/* ==================================================
-          PAGE 1: Base Terminal Layer (Always remains mounted behind)
-          ================================================== */}
-      <div
-        className={`page-one-wrapper ${activePage >= 2 ? 'is-inactive' : ''} ${activePage === 3 ? 'is-deep' : ''}`}
-        aria-hidden={activePage !== 1}
-      >
-        <FaultyTerminal
-          scale={1.7}
-          gridMul={[2, 1]}
-          digitSize={1.3}
-          timeScale={1.1}
-          pause={false}
-          scanlineIntensity={0.9}
-          glitchAmount={1}
-          flickerAmount={1}
-          noiseAmp={1}
-          chromaticAberration={0}
-          dither={0}
-          curvature={0.11}
-          tint="#45f031"
-          mouseReact={true}
-          mouseStrength={0.2}
-          pageLoadAnimation={false}
-          brightness={0.5}
-          overlayText={{
-            line1: 'Building Fast,',
-            line2: 'Shipping even Faster'
-          }}
-        />
-
-        {/* Accessible screen-reader headline for Page 1 */}
-        <div className="page-one-hero-accessible sr-only" aria-label="Hero Title">
-          <h1>
-            <span>Building Fast,</span>
-            <span>Shipping even Faster</span>
-          </h1>
+function SiteFooter() {
+  return (
+    <footer className="site-footer" id="contact" aria-labelledby="contact-heading">
+      <div className="content footer-inner">
+        <div className="footer-intro">
+          <p className="footer-kicker">contact</p>
+          <h2 id="contact-heading">
+            let&apos;s build something<span className="footer-cursor" aria-hidden="true">_</span>
+          </h2>
+          <p className="footer-tagline">
+            <span aria-hidden="true">//</span> {personal.tagline}
+          </p>
         </div>
 
-        {/* Explore cue button on Page 1 */}
-        {activePage === 1 && (
-          <button
-            type="button"
-            className="page-one-explore-btn"
-            onClick={() => goToPage(2)}
-            aria-label="Scroll, click, or press Enter to view About page"
+        <div className="footer-links">
+          <a href={`mailto:${personal.email}`}>
+            <span className="footer-link-label">email</span>
+            <span>{personal.email}</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+          <a href={personal.github.url} target="_blank" rel="noreferrer">
+            <span className="footer-link-label">github</span>
+            <span>{personal.github.label}</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+          <a href={personal.linkedin.url} target="_blank" rel="noreferrer">
+            <span className="footer-link-label">linkedin</span>
+            <span>{personal.linkedin.label}</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+
+        <div className="footer-base">
+          <span>
+            © {new Date().getFullYear()} {personal.name}
+          </span>
+          <span>{personal.location}</span>
+          <span>EOF</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+export default function App() {
+  const { theme, toggleTheme } = useTheme();
+  const activeSection = useActiveSection();
+  const latestRole = experience[0];
+  const previousRole = experience[1];
+
+  return (
+    <div className="app">
+      <a className="skip-link" href="#main">
+        skip to content
+      </a>
+
+      <Topbar theme={theme} onToggleTheme={toggleTheme} />
+      <Sidebar personal={personal} sections={SECTIONS} activeSection={activeSection} />
+
+      <main className="main" id="main" tabIndex={-1}>
+        <div className="content">
+          <Section id="about" index="01" title="about" path="~/about">
+            <div className="prose">
+              <p>
+                I am a computer science student at <strong>{education.institution}</strong> and a
+                full-stack developer. I build React and Next.js interfaces, Django APIs, and the
+                systems behind them.
+              </p>
+              <p>
+                Most recently, I interned at <strong>{latestRole.company}</strong> on Bhojpatra&apos;s
+                booking frontend and security audit. Before that, I built an e-signature platform at{' '}
+                <strong>{previousRole.company}</strong>.
+              </p>
+            </div>
+
+            <ActivityDashboard github={personal.github} leetcode={personal.leetcode} />
+          </Section>
+
+          <Section id="experience" index="02" title="experience" path="~/experience">
+            <ExperienceTimeline items={experience} />
+          </Section>
+
+          <Section id="projects" index="03" title="projects" path="~/projects">
+            <ProjectShowcase projects={projects} />
+          </Section>
+
+          <Section id="skills" index="04" title="skills" path="~/skills">
+            <dl className="skill-table">
+              {technicalSkills.categories.map((category) => (
+                <div className="skill-row" key={category.name}>
+                  <dt>{category.name}</dt>
+                  <dd>{category.skills.join(' · ')}</dd>
+                </div>
+              ))}
+            </dl>
+          </Section>
+
+          <Section id="education" index="05" title="education" path="~/education">
+            <article className="entry entry-plain">
+              <div className="entry-head">
+                <h3>{education.degree}</h3>
+                <span className="entry-period">{education.period}</span>
+              </div>
+              <p className="entry-sub">
+                <span className="entry-role">{education.institution}</span>
+                <span className="meta-sep" aria-hidden="true">
+                  /
+                </span>
+                {education.location}
+                <span className="meta-sep" aria-hidden="true">
+                  /
+                </span>
+                <span className="accent">CGPA {education.cgpa}</span>
+              </p>
+              <p className="detail-line">
+                <span className="field-label">coursework</span>
+                <span>{education.coursework.join(' · ')}</span>
+              </p>
+            </article>
+          </Section>
+
+          <Section
+            id="certifications"
+            index="06"
+            title="certifications"
+            path="~/credentials"
           >
-            <span>EXPLORE ABOUT</span>
-            <span className="page-one-explore-badge">[ENTER]</span>
-            <span className="page-one-explore-arrow">▼</span>
-          </button>
-        )}
-      </div>
+            <ul className="plain-list">
+              {certifications.map((certification) => (
+                <li key={certification.name}>
+                  <span>{certification.name}</span>
+                  <span className="plain-list-meta">{certification.issuer}</span>
+                </li>
+              ))}
+            </ul>
 
-      {/* ==================================================
-          PAGE 2: Stacked Middle Layer (About Me with LightTunnel)
-          ================================================== */}
-      <div
-        className={`page-two-wrapper ${activePage >= 2 ? 'is-active' : ''} ${activePage === 3 ? 'is-inactive' : ''}`}
-        aria-hidden={activePage !== 2}
-      >
-        <PageTwo
-          ref={pageTwoRef}
-          onReturnToPageOne={() => goToPage(1)}
-          onProceedToPageThree={() => goToPage(3)}
-        />
-      </div>
+            <div className="notes">
+              <p>
+                <span className="field-label">{achievements.competitiveProgramming.title}</span>
+                {achievements.competitiveProgramming.description}
+              </p>
+              <p>
+                <span className="field-label">{achievements.cybersecurity.title}</span>
+                {achievements.cybersecurity.description}
+              </p>
+            </div>
+          </Section>
+        </div>
 
-      {/* ==================================================
-          PAGE 3: Stacked Top Layer (FlowingMenu)
-          ================================================== */}
-      <div
-        className={`page-three-wrapper ${activePage === 3 ? 'is-active' : ''}`}
-        aria-hidden={activePage !== 3}
-      >
-        <PageThree
-          ref={pageThreeRef}
-          onReturnToPageTwo={() => goToPage(2)}
-          onSubpageStateChange={handleSubpageStateChange}
-        />
-      </div>
+        <SiteFooter />
+      </main>
     </div>
   );
 }

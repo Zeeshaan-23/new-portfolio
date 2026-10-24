@@ -8,7 +8,7 @@ export const portfolioData = {
     name: 'Shaik Zeeshaan Suhail',
     shortName: 'Zeeshaan Suhail',
     brandName: 'Zeeshaan',
-    headline: 'Full-Stack Developer Intern & Computer Science Student',
+    headline: 'Full-Stack Developer & Computer Science Student',
     tagline: 'Building Fast, Shipping even Faster',
     location: 'Sattenapalli, Andhra Pradesh',
     email: 'zeeshaansuhail23@gmail.com',
@@ -18,8 +18,15 @@ export const portfolioData = {
       url: 'https://linkedin.com/in/zeeshaan-suhail'
     },
     github: {
+      username: 'Zeeshaan-23',
       label: 'github.com/Zeeshaan-23',
       url: 'https://github.com/Zeeshaan-23'
+    },
+    // Add the LeetCode handle here, then run `npm run sync:leetcode` to build
+    // the real calendar snapshot used by the activity dashboard.
+    leetcode: {
+      username: '',
+      url: ''
     }
   },
 
@@ -44,19 +51,17 @@ export const portfolioData = {
       id: 'open-idea',
       company: 'Open Idea Ecosyz',
       role: 'Full-Stack Developer Intern',
-      period: 'August 2026 – Present',
+      period: 'August 2026 – October 2026',
       location: 'Remote',
-      isCurrent: true,
+      isCurrent: false,
       description:
-        'Built frontend features for Bhojpatra, a premium feast and caterer booking platform, using Next.js 16, React 19, TypeScript, Tailwind CSS, and Framer Motion. Accelerated development with Claude, Gemini, and Antigravity alongside documented Git/GitHub workflows. Secured the platform by running a security audit with Antigravity agent skills sourced from GitHub and Google, uncovering client-controlled payment amounts, an exposed database, missing rate limits, and duplicate sessions. Improved release quality through manual QA and AI-driven automated testing run from an Excel test plan, covering the checkout and payment flow. Building the official Open Idea website on the same stack, studying user behaviour and UI/UX complexities to guide design decisions.',
+        'Built and audited Bhojpatra, a feast and caterer booking platform, and helped build the official Open Idea website.',
       bullets: [
-        'Built frontend features for Bhojpatra, a premium feast and caterer booking platform, using Next.js 16, React 19, TypeScript, Tailwind CSS, and Framer Motion.',
-        'Accelerated development with Claude, Gemini, and Antigravity alongside documented Git/GitHub workflows.',
-        'Secured the platform by running a security audit with Antigravity agent skills sourced from GitHub and Google, uncovering client-controlled payment amounts, an exposed database, missing rate limits, and duplicate sessions.',
-        'Improved release quality through manual QA and AI-driven automated testing run from an Excel test plan, covering the checkout and payment flow.',
-        'Building the official Open Idea website on the same stack, studying user behaviour and UI/UX complexities to guide design decisions.'
+        "Built Bhojpatra's feast-booking frontend with Next.js, React, TypeScript, and Tailwind CSS.",
+        'Audited payments, authentication, rate limits, and sessions, surfacing critical security gaps.',
+        'Covered checkout with manual and AI-assisted QA and helped build the official Open Idea site.'
       ],
-      stack: ['Next.js 16', 'React 19', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'Claude', 'Gemini', 'Antigravity', 'Git/GitHub']
+      stack: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Security Auditing', 'AI-assisted QA']
     },
     {
       id: 'bottrion',
@@ -66,14 +71,13 @@ export const portfolioData = {
       location: 'Remote',
       isCurrent: false,
       description:
-        'Built the eSign Platform, an e-signature system with serial and parallel signing workflows. Developed hands-on proficiency in IBM DataPower Gateway by replicating its XML Firewalls, Multi-Protocol Gateways, and Web Service Proxies, plus XSLT transformations, AAA policies, and TLS client profiles. Reduced environment setup friction by containerising the DataPower development environment with Docker and WSL2/Ubuntu.',
+        'Built the eSign Platform and configured IBM DataPower gateways in a containerised development environment.',
       bullets: [
-        'Built the eSign Platform, an e-signature system with serial and parallel signing workflows.',
-        'Developed hands-on proficiency in IBM DataPower Gateway by replicating its XML Firewalls, Multi-Protocol Gateways, and Web Service Proxies.',
-        'Worked with XSLT transformations, AAA policies, and TLS client profiles.',
-        'Reduced environment setup friction by containerising the DataPower development environment with Docker and WSL2/Ubuntu.'
+        'Built the eSign Platform with serial and parallel signing workflows.',
+        'Replicated IBM DataPower gateways, XSLT transformations, AAA policies, and TLS profiles.',
+        'Containerised the DataPower development environment with Docker and WSL2/Ubuntu.'
       ],
-      stack: ['Django', 'Django REST Framework', 'React', 'PostgreSQL', 'Redis', 'Celery', 'Cloudflare R2', 'IBM DataPower', 'Docker', 'WSL2/Ubuntu']
+      stack: ['Django', 'React', 'PostgreSQL', 'Docker', 'IBM DataPower']
     }
   ],
 
@@ -83,15 +87,14 @@ export const portfolioData = {
       title: 'eSign Platform',
       role: 'Backend / Frontend',
       timeline: 'May – July 2026',
-      stack: ['Django', 'Django REST Framework', 'React', 'PostgreSQL', 'Redis', 'Celery', 'Cloudflare R2'],
+      stack: ['Django', 'React', 'PostgreSQL', 'Redis', 'Celery', 'Cloudflare R2'],
       deployment: 'Railway',
+      repo: 'https://github.com/Zeeshaan-23/esign-platform',
       description:
-        'Built a signing platform supporting serial and parallel multi-signer workflows, package management, and a complete audit trail. Designed 10+ REST APIs with JWT authentication and role-based access control. Automated notifications and background jobs using Celery, Redis, and SendGrid; stored documents using Cloudflare R2 and deployed on Railway.',
+        'A multi-signer e-signature platform with audit trails, JWT-secured APIs, and automated document workflows.',
       bullets: [
-        'Streamlined multi-signer workflows by building a signing platform with serial and parallel routing, package management, and a full audit trail.',
-        'Secured document handling by designing 10+ REST APIs with JWT authentication and role-based access control.',
-        'Automated notifications and background jobs with Celery, Redis, and SendGrid.',
-        'Stored documents on Cloudflare R2 and deployed on Railway.'
+        'Built multi-signer workflows with serial and parallel routing, package management, and an audit trail.',
+        'Designed 10+ JWT-secured APIs; automated jobs with Celery and stored documents on Cloudflare R2.'
       ]
     },
     {
@@ -99,13 +102,13 @@ export const portfolioData = {
       title: 'UniMeet',
       role: 'Code',
       timeline: 'May 2026',
-      stack: ['MongoDB', 'Express.js', 'React', 'Node.js (MERN)'],
+      stack: ['MongoDB', 'Express.js', 'React', 'Node.js'],
+      repo: 'https://github.com/Zeeshaan-23/UniMeet',
       description:
-        'Built an appointment platform for faculty scheduling with dashboards for 3 user roles: Students, Teachers, and Admins. Enabled real-time booking via JWT-secured REST APIs for slots, requests, and approvals, with a responsive React UI.',
+        'A faculty appointment platform with role-based dashboards and JWT-secured booking.',
       bullets: [
-        'Simplified faculty scheduling by building an appointment platform with dashboards for 3 user roles (Students, Teachers, Admins).',
-        'Enabled real-time booking via JWT-secured REST APIs for slots, requests, and approvals.',
-        'Built a responsive React interface.'
+        'Built an appointment platform with dashboards for students, teachers, and admins.',
+        'Enabled JWT-secured booking, requests, and approvals with a responsive React UI.'
       ]
     },
     {
@@ -114,11 +117,12 @@ export const portfolioData = {
       role: 'Code',
       timeline: 'May 2026',
       stack: ['MySQL'],
+      repo: 'https://github.com/Zeeshaan-23/DBMS-Hospital-Management',
       description:
-        'Centralised patient, doctor, appointment, and billing data by designing a normalised MySQL schema with full CRUD functionality. Automated operations and enforced data integrity with optimised SQL queries, stored procedures, and triggers.',
+        'A normalised MySQL database for patient, doctor, appointment, and billing records.',
       bullets: [
-        'Centralised patient, doctor, appointment, and billing data by designing a normalised MySQL schema with full CRUD.',
-        'Automated operations and enforced integrity with optimised SQL queries, stored procedures, and triggers.'
+        'Designed a normalised schema with full CRUD for patients, doctors, appointments, and billing.',
+        'Automated operations with optimised queries, stored procedures, and triggers.'
       ]
     }
   ],
@@ -170,7 +174,7 @@ export const portfolioData = {
     },
     cybersecurity: {
       title: 'Cybersecurity',
-      description: 'Hands-on TryHackMe labs — Linux, Active Directory, Nmap, Wireshark, Metasploit',
+      description: 'Hands-on TryHackMe labs in Linux, Active Directory, and network security',
       topics: ['Linux', 'Active Directory', 'Nmap', 'Wireshark', 'Metasploit']
     }
   },
@@ -199,12 +203,11 @@ export const portfolioData = {
       description: 'Built the eSign Platform with serial and parallel signing workflows. Developed hands-on proficiency in IBM DataPower Gateway replicating XML Firewalls, Multi-Protocol Gateways, Web Service Proxies, XSLT transformations, AAA policies, and TLS client profiles. Containerised development environment with Docker and WSL2/Ubuntu.'
     },
     {
-      date: 'August 2026 – Present',
-      badge: 'CURRENT ROLE',
+      date: 'August 2026 – October 2026',
+      badge: 'INTERNSHIP',
       title: 'Open Idea Ecosyz',
       subtitle: 'Full-Stack Developer Intern (Remote)',
-      isCurrent: true,
-      description: 'Built frontend features for Bhojpatra using Next.js 16, React 19, TypeScript, Tailwind CSS, and Framer Motion. Accelerated development with Claude, Gemini, and Antigravity. Secured platform by executing a security audit with Antigravity agent skills uncovering critical payment, database, and rate limit vulnerabilities. Improved release quality via manual QA & AI-driven testing. Building official Open Idea website.'
+      description: 'Built Bhojpatra’s booking frontend, audited payment and authentication flows, and helped build the official Open Idea website.'
     }
   ],
 
