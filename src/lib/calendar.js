@@ -22,6 +22,33 @@ function toIsoDate(date) {
   return date.toISOString().slice(0, 10);
 }
 
+export function collectYears(days) {
+  const totals = new Map();
+
+  for (const day of days || []) {
+    if (!day?.date) continue;
+    const year = Number(day.date.slice(0, 4));
+    totals.set(year, (totals.get(year) || 0) + (Number(day.count) || 0));
+  }
+
+  const years = [...totals.entries()]
+    .filter(([, total]) => total > 0)
+    .map(([year]) => year);
+
+  const currentYear = new Date().getUTCFullYear();
+  if (!years.includes(currentYear)) years.push(currentYear);
+
+  return years.sort((a, b) => b - a);
+}
+
+export function filterDaysByYear(days, year) {
+  if (!Array.isArray(days)) return [];
+  if (!year) return days;
+
+  const prefix = `${year}-`;
+  return days.filter((day) => typeof day?.date === 'string' && day.date.startsWith(prefix));
+}
+
 export function buildCalendar(days) {
   if (!Array.isArray(days) || days.length === 0) return null;
 
@@ -73,30 +100,29 @@ export function buildCalendar(days) {
     weeks.push(week);
   }
 
-  const monthLabels = [];
-  let previousMonth = -1;
+  // Group whole week columns into months so the chart reads as months,
+  // not one continuous block. A week belongs to the month of its first
+  // day inside the requested range, so a year view opens on january.
+  const months = [];
 
-  weeks.forEach((currentWeek, index) => {
-    const firstDay = currentWeek.find(Boolean);
-    if (!firstDay) {
-      monthLabels.push('');
-      return;
+  for (const week of weeks) {
+    const anchor = week.find((day) => day && entries.has(day.date)) || week.find(Boolean);
+    if (!anchor) continue;
+
+    const key = anchor.date.slice(0, 7);
+    let month = months[months.length - 1];
+
+    if (!month || month.key !== key) {
+      month = { key, label: MONTH_LABELS[Number(key.slice(5, 7)) - 1], weeks: [] };
+      months.push(month);
     }
 
-    const month = Number(firstDay.date.slice(5, 7)) - 1;
-    const dayOfMonth = Number(firstDay.date.slice(8, 10));
-
-    if (index === 0 || (month !== previousMonth && dayOfMonth <= 7)) {
-      monthLabels.push(MONTH_LABELS[month]);
-      previousMonth = month;
-    } else {
-      monthLabels.push('');
-    }
-  });
+    month.weeks.push(week);
+  }
 
   return {
     weeks,
-    monthLabels,
+    months,
     total: sorted.reduce((sum, day) => sum + day.count, 0),
     activeDays: sorted.filter((day) => day.count > 0).length,
     maxDay: maxCount,

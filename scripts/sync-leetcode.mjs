@@ -31,6 +31,10 @@ const query = `
         }
       }
     }
+    allQuestionsCount {
+      difficulty
+      count
+    }
   }
 `;
 
@@ -53,12 +57,11 @@ async function fetchYear(year) {
     throw new Error(payload.errors.map((error) => error.message).join(' '));
   }
 
-  const matchedUser = payload.data?.matchedUser;
-  if (!matchedUser) {
+  if (!payload.data?.matchedUser) {
     throw new Error(`LeetCode profile "${username}" was not found.`);
   }
 
-  return matchedUser;
+  return payload.data;
 }
 
 function parseCalendar(value) {
@@ -87,17 +90,40 @@ const previousYear = firstDay.getUTCFullYear();
 const years = [...new Set([previousYear, currentYear])];
 
 const calendars = {};
-let solvedTotal = null;
+const solvedCounts = {};
+const questionTotals = {};
 
 for (const year of years) {
-  const profile = await fetchYear(year);
-  Object.assign(calendars, parseCalendar(profile.userCalendar?.submissionCalendar));
+  const { matchedUser, allQuestionsCount } = await fetchYear(year);
+  Object.assign(calendars, parseCalendar(matchedUser.userCalendar?.submissionCalendar));
 
-  const solved = profile.submitStatsGlobal?.acSubmissionNum?.find(
-    (entry) => entry.difficulty === 'All'
-  );
-  if (solved && Number.isFinite(solved.count)) solvedTotal = solved.count;
+  for (const entry of matchedUser.submitStatsGlobal?.acSubmissionNum || []) {
+    const count = Number(entry.count);
+    if (Number.isFinite(count)) solvedCounts[entry.difficulty] = count;
+  }
+
+  for (const entry of allQuestionsCount || []) {
+    const count = Number(entry.count);
+    if (Number.isFinite(count)) questionTotals[entry.difficulty] = count;
+  }
 }
+
+const solvedTotal = Number.isFinite(solvedCounts.All) ? solvedCounts.All : null;
+
+const difficultyStat = (difficulty) => {
+  const solved = solvedCounts[difficulty];
+  const total = questionTotals[difficulty];
+  return Number.isFinite(solved) && Number.isFinite(total) ? { solved, total } : null;
+};
+
+const problemStats = {
+  total: difficultyStat('All'),
+  easy: difficultyStat('Easy'),
+  medium: difficultyStat('Medium'),
+  hard: difficultyStat('Hard')
+};
+
+const problems = Object.values(problemStats).every(Boolean) ? problemStats : null;
 
 const days = [];
 for (const cursor = new Date(firstDay); cursor <= today; cursor.setUTCDate(cursor.getUTCDate() + 1)) {
@@ -124,6 +150,7 @@ const snapshot = {
   total,
   activeDays,
   solvedTotal,
+  problems,
   days: leveledDays
 };
 

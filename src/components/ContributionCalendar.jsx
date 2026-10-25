@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
-import { buildCalendar } from '../lib/calendar';
+import { buildCalendar, filterDaysByYear } from '../lib/calendar';
+
+const SKELETON_MONTHS = [5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 5];
 
 function formatSnapshot(value) {
   if (!value) return null;
@@ -17,16 +19,24 @@ function StateMessage({ label, children }) {
   );
 }
 
-export default function ContributionCalendar({ activity, kind, noun = 'contributions', unit = 'contribution', onRetry }) {
-  const calendar = useMemo(() => buildCalendar(activity.days), [activity.days]);
+export default function ContributionCalendar({ activity, kind, year, noun = 'contributions', unit = 'contribution', onRetry }) {
+  const days = useMemo(() => filterDaysByYear(activity.days, year), [activity.days, year]);
+  const calendar = useMemo(() => buildCalendar(days), [days]);
 
   if (activity.status === 'loading') {
     return (
       <div className="calendar-loading" aria-busy="true">
         <span className="sr-only">Loading {kind} activity...</span>
-        <div className="calendar-skeleton" aria-hidden="true">
-          {Array.from({ length: 53 * 7 }).map((_, index) => (
-            <span key={index} className="skeleton-cell" />
+        <div className="cal-track calendar-skeleton" aria-hidden="true">
+          {SKELETON_MONTHS.map((weekCount, monthIndex) => (
+            <div className="cal-month" key={monthIndex}>
+              <span className="cal-month-label" />
+              <div className="cal-month-grid">
+                {Array.from({ length: weekCount * 7 }).map((_, cellIndex) => (
+                  <span key={cellIndex} className="skeleton-cell" />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
         <p className="calendar-loading-label">loading activity...</p>
@@ -57,40 +67,50 @@ export default function ContributionCalendar({ activity, kind, noun = 'contribut
   }
 
   if (!calendar || calendar.total === 0) {
-    return <StateMessage label="empty">No public activity in the last 12 months.</StateMessage>;
+    return (
+      <StateMessage label="empty">
+        No public activity in {year ? `${year}.` : 'the last 12 months.'}
+      </StateMessage>
+    );
   }
 
   const snapshot = formatSnapshot(activity.syncedAt);
-  const activeDays = activity.activeDays || calendar.activeDays;
+  const { activeDays } = calendar;
 
   return (
     <figure className="calendar">
       <div className="calendar-scroll">
         <div className="calendar-inner">
-          <div className="cal-months" aria-hidden="true">
-            {calendar.monthLabels.map((label, index) => (
-              <span key={`${label}-${index}`}>{label}</span>
-            ))}
-          </div>
-
           <div
-            className="cal-grid"
+            className="cal-track"
             role="img"
             aria-label={`${calendar.total} ${noun} in the last 12 months, across ${activeDays} active days.`}
           >
-            {calendar.weeks.map((week, weekIndex) =>
-              week.map((day, dayIndex) =>
-                day ? (
-                  <span
-                    key={`${weekIndex}-${dayIndex}`}
-                    className={`cal-cell level-${day.level}`}
-                    title={`${day.count} ${day.count === 1 ? unit : noun} on ${day.date}`}
-                  />
-                ) : (
-                  <span key={`${weekIndex}-${dayIndex}`} className="cal-cell is-empty" />
-                )
-              )
-            )}
+            {calendar.months.map((month) => (
+              <div className="cal-month" key={month.key}>
+                <span className="cal-month-label" aria-hidden="true">
+                  {month.label}
+                </span>
+                <div className="cal-month-grid">
+                  {month.weeks.map((week, weekIndex) =>
+                    week.map((day, dayIndex) =>
+                      day ? (
+                        <span
+                          key={day.date}
+                          className={`cal-cell level-${day.level}`}
+                          title={`${day.count} ${day.count === 1 ? unit : noun} on ${day.date}`}
+                        />
+                      ) : (
+                        <span
+                          key={`empty-${weekIndex}-${dayIndex}`}
+                          className="cal-cell is-empty"
+                        />
+                      )
+                    )
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

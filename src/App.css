@@ -1,11 +1,15 @@
 :root {
-  --cal-cell: 11px;
+  --cal-cell: 10px;
   --cal-gap: 3px;
+  --cal-month-gap: 8px;
   --cal-0: #19211a;
   --cal-1: #24432a;
   --cal-2: #356d3e;
   --cal-3: #55a461;
   --cal-4: #8ce99a;
+  --diff-easy: #d3f8d8;
+  --diff-medium: #7ad98c;
+  --diff-hard: #38915a;
 }
 
 html[data-theme='light'] {
@@ -14,6 +18,9 @@ html[data-theme='light'] {
   --cal-2: #9bcea4;
   --cal-3: #5da56d;
   --cal-4: #1c7438;
+  --diff-easy: #6abb7d;
+  --diff-medium: #2b8348;
+  --diff-hard: #0f4a26;
 }
 
 .app {
@@ -561,6 +568,7 @@ html[data-theme='light'] .about-photo img {
 
 .activity-viewport {
   overflow: hidden;
+  container-type: inline-size;
 }
 
 .activity-track {
@@ -578,12 +586,54 @@ html[data-theme='light'] .about-photo img {
 
 .activity-meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 8px 16px;
   margin-bottom: 12px;
   color: var(--muted);
   font-size: 0.63rem;
+}
+
+.activity-meta-right {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+}
+
+.chart-year {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.chart-year-label {
+  color: var(--dim);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.chart-year-static {
+  color: var(--fg-soft);
+  font-size: 0.6rem;
+}
+
+.chart-year-select {
+  padding: 1px 4px;
+  color: var(--fg-soft);
+  font: inherit;
+  font-size: 0.6rem;
+  background-color: var(--bg-panel-strong);
+  border: 1px solid var(--rule-strong);
+  border-radius: 0;
+}
+
+.chart-year-select:hover {
+  color: var(--green);
+  border-color: var(--green-deep);
 }
 
 .activity-source {
@@ -614,6 +664,150 @@ html[data-theme='light'] .about-photo img {
   text-decoration: none;
 }
 
+.activity-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 22px;
+}
+
+.activity-chart {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Total problems solved: desktop-only companion to the LeetCode calendar. */
+.leetcode-summary {
+  display: none;
+}
+
+@container (min-width: 980px) {
+  .leetcode-summary {
+    display: flex;
+    flex: 0 0 152px;
+    flex-direction: column;
+    align-items: center;
+    gap: 13px;
+    padding-left: 22px;
+    border-left: 1px solid var(--rule);
+  }
+}
+
+.lq-ring {
+  position: relative;
+  flex: none;
+  width: 120px;
+  height: 120px;
+}
+
+.lq-ring-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.lq-ring-track {
+  stroke: var(--rule);
+}
+
+.lq-ring-arc-easy {
+  stroke: var(--diff-easy);
+}
+
+.lq-ring-arc-medium {
+  stroke: var(--diff-medium);
+}
+
+.lq-ring-arc-hard {
+  stroke: var(--diff-hard);
+}
+
+.lq-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.lq-ring-count {
+  display: flex;
+  align-items: baseline;
+  color: var(--fg-bright);
+  line-height: 1;
+}
+
+.lq-ring-solved {
+  font-size: 1.12rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.lq-ring-total {
+  color: var(--dim);
+  font-size: 0.5rem;
+}
+
+.lq-ring-caption {
+  color: var(--dim);
+  font-size: 0.48rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.lq-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+
+.lq-breakdown li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.57rem;
+  line-height: 1.4;
+}
+
+.lq-swatch {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 1px;
+  background-color: var(--dim);
+}
+
+.lq-swatch-easy {
+  background-color: var(--diff-easy);
+}
+
+.lq-swatch-medium {
+  background-color: var(--diff-medium);
+}
+
+.lq-swatch-hard {
+  background-color: var(--diff-hard);
+}
+
+.lq-difficulty {
+  color: var(--muted);
+}
+
+.lq-fraction {
+  margin-left: auto;
+  color: var(--fg-soft);
+  font-size: 0.55rem;
+  letter-spacing: 0.01em;
+}
+
+.lq-fraction-sep {
+  margin: 0 1px;
+  color: var(--dim);
+}
+
 .calendar {
   margin: 0;
 }
@@ -630,25 +824,31 @@ html[data-theme='light'] .about-photo img {
   min-width: 100%;
 }
 
-.cal-months {
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-rows: 13px;
-  grid-auto-columns: var(--cal-cell);
-  gap: var(--cal-gap);
-  margin-bottom: 4px;
-  overflow: visible;
+/* One block per month, separated by a wider gap than the day cells. */
+.cal-track {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--cal-month-gap);
+  width: max-content;
+}
+
+.cal-month {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cal-month-label {
+  display: block;
+  height: 12px;
   color: var(--dim);
   font-size: 9px;
   line-height: 1;
-}
-
-.cal-months span {
-  padding-top: 1px;
   white-space: nowrap;
 }
 
-.cal-grid {
+.cal-month-grid {
   display: grid;
   grid-auto-flow: column;
   grid-template-rows: repeat(7, var(--cal-cell));
@@ -735,12 +935,6 @@ html[data-theme='light'] .about-photo img {
 }
 
 .calendar-skeleton {
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-rows: repeat(7, var(--cal-cell));
-  grid-auto-columns: var(--cal-cell);
-  gap: var(--cal-gap);
-  width: max-content;
   overflow: hidden;
   opacity: 0.6;
 }
@@ -1275,6 +1469,7 @@ html[data-theme='light'] .about-photo img {
   :root {
     --rail-w: 0px;
     --gutter: 34px;
+    --cal-cell: 11px;
   }
 
   .sidebar {

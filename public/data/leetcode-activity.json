@@ -1,6 +1,6 @@
 {
   "username": "Zeeshaan__Codes",
-  "syncedAt": "2026-10-25T09:26:39.915Z",
+  "syncedAt": "2026-10-25T10:10:33.856Z",
   "range": {
     "start": "2025-10-26",
     "end": "2026-10-25"
@@ -8,6 +8,24 @@
   "total": 188,
   "activeDays": 115,
   "solvedTotal": 69,
+  "problems": {
+    "total": {
+      "solved": 69,
+      "total": 4095
+    },
+    "easy": {
+      "solved": 28,
+      "total": 974
+    },
+    "medium": {
+      "solved": 38,
+      "total": 2135
+    },
+    "hard": {
+      "solved": 3,
+      "total": 986
+    }
+  },
   "days": [
     {
       "date": "2025-10-26",
