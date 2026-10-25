@@ -1,7 +1,19 @@
-import { useMemo } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { buildCalendar, filterDaysByYear } from '../lib/calendar';
 
 const SKELETON_MONTHS = [5, 4, 4, 5, 4, 4, 5, 4, 4, 5, 4, 5];
+
+function formatDay(iso) {
+  const date = new Date(`${iso}T00:00:00Z`);
+  if (Number.isNaN(date.getTime())) return iso;
+  return new Intl.DateTimeFormat('en', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC'
+  }).format(date);
+}
 
 function formatSnapshot(value) {
   if (!value) return null;
@@ -22,6 +34,54 @@ function StateMessage({ label, children }) {
 export default function ContributionCalendar({ activity, kind, year, noun = 'contributions', unit = 'contribution', onRetry }) {
   const days = useMemo(() => filterDaysByYear(activity.days, year), [activity.days, year]);
   const calendar = useMemo(() => buildCalendar(days), [days]);
+
+  const tipRef = useRef(null);
+  const [tip, setTip] = useState(null);
+
+  const showTip = useCallback(
+    (event, day) => {
+      const rect = event.currentTarget.getBoundingClientRect();
+      const above = rect.top > 64;
+
+      setTip({
+        date: formatDay(day.date),
+        count: day.count === 0 ? `no ${noun}` : `${day.count} ${day.count === 1 ? unit : noun}`,
+        x: rect.left + rect.width / 2,
+        y: above ? rect.top - 7 : rect.bottom + 7,
+        above
+      });
+    },
+    [noun, unit]
+  );
+
+  const hideTip = useCallback(() => setTip(null), []);
+
+  // Keep the card fully inside the viewport when a cell sits near an edge.
+  useLayoutEffect(() => {
+    if (!tip || !tipRef.current) return;
+
+    const half = tipRef.current.offsetWidth / 2 + 8;
+    const clamped = Math.min(Math.max(tip.x, half), Math.max(half, window.innerWidth - half));
+
+    if (Math.abs(clamped - tip.x) > 0.5) {
+      setTip((current) => (current ? { ...current, x: clamped } : current));
+    }
+  }, [tip]);
+
+  // The card is anchored to a cell, so any scroll or resize invalidates it.
+  useEffect(() => {
+    if (!tip) return undefined;
+
+    const dismiss = () => setTip(null);
+
+    window.addEventListener('scroll', dismiss, { passive: true, capture: true });
+    window.addEventListener('resize', dismiss);
+
+    return () => {
+      window.removeEventListener('scroll', dismiss, { capture: true });
+      window.removeEventListener('resize', dismiss);
+    };
+  }, [tip]);
 
   if (activity.status === 'loading') {
     return (
@@ -98,7 +158,8 @@ export default function ContributionCalendar({ activity, kind, year, noun = 'con
                         <span
                           key={day.date}
                           className={`cal-cell level-${day.level}`}
-                          title={`${day.count} ${day.count === 1 ? unit : noun} on ${day.date}`}
+                          onPointerEnter={(event) => showTip(event, day)}
+                          onPointerLeave={hideTip}
                         />
                       ) : (
                         <span
@@ -148,6 +209,20 @@ export default function ContributionCalendar({ activity, kind, year, noun = 'con
           <span>more</span>
         </div>
       </div>
+
+      {tip &&
+        createPortal(
+          <div
+            ref={tipRef}
+            className={`cal-tip${tip.above ? ' is-above' : ' is-below'}`}
+            style={{ left: `${tip.x}px`, top: `${tip.y}px` }}
+            role="presentation"
+          >
+            <span className="cal-tip-count">{tip.count}</span>
+            <span className="cal-tip-date">{tip.date}</span>
+          </div>,
+          document.body
+        )}
     </figure>
   );
 }

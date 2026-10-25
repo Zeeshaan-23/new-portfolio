@@ -179,6 +179,18 @@ export default function App() {
                   booking frontend and security audit. Before that, I built an e-signature platform
                   at <strong>{previousRole.company}</strong>.
                 </p>
+
+                <a
+                  className="resume-link"
+                  href={`${import.meta.env.BASE_URL}resume.pdf`}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Open resume PDF in a new tab"
+                >
+                  <span className="resume-link-prompt" aria-hidden="true">$</span>
+                  open resume.pdf
+                  <span className="resume-link-arrow" aria-hidden="true">↗</span>
+                </a>
               </div>
 
               <figure className="about-photo">

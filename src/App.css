@@ -426,6 +426,43 @@ html[data-theme='light'] .about-photo img {
   font-weight: 600;
 }
 
+/* Resume link: a bordered terminal command, matching the topbar toggle. */
+.resume-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 22px;
+  padding: 8px 12px;
+  color: var(--green);
+  font-size: 0.68rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  border: 1px solid var(--rule-strong);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.resume-link:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--green-deep);
+  text-decoration: none;
+}
+
+.resume-link-prompt {
+  color: var(--faint);
+}
+
+.resume-link:hover .resume-link-prompt {
+  color: var(--green-soft);
+}
+
+.resume-link-arrow {
+  color: var(--dim);
+}
+
+.resume-link:hover .resume-link-arrow {
+  color: var(--green);
+}
+
 /* Shared entry details */
 .detail-line {
   display: flex;
@@ -810,6 +847,41 @@ html[data-theme='light'] .about-photo img {
 
 .calendar {
   margin: 0;
+}
+
+/* Themed hover card for a day cell. Portaled to <body>, so it escapes the
+   chart's overflow clipping and stays anchored to the cell. */
+.cal-tip {
+  position: fixed;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 7px 10px;
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  line-height: 1.25;
+  white-space: nowrap;
+  background-color: var(--bg-panel-strong);
+  border: 1px solid var(--rule-strong);
+  box-shadow: 0 10px 22px var(--shadow);
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+}
+
+.cal-tip.is-below {
+  transform: translate(-50%, 0);
+}
+
+.cal-tip-count {
+  color: var(--fg-bright);
+}
+
+.cal-tip-date {
+  color: var(--dim);
+  font-size: 0.55rem;
+  letter-spacing: 0.04em;
 }
 
 .calendar-scroll {
