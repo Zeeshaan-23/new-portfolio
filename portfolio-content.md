@@ -10,6 +10,7 @@
 - **Phone**: +91 90591 49898
 - **LinkedIn**: linkedin.com/in/zeeshaan-suhail
 - **GitHub**: github.com/Zeeshaan-23
+- **LeetCode**: leetcode.com/u/Zeeshaan__Codes
 
 ---
 

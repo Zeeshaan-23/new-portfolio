@@ -139,11 +139,77 @@ export function useLeetcodeActivity(username) {
 
   const fetcher = useCallback(
     async (signal) => {
+      // 1. Live client-side fetch via public CORS-enabled LeetCode API
+      try {
+        const liveResponse = await fetch(
+          `https://alfa-leetcode-api.onrender.com/userProfile/${encodeURIComponent(username)}`,
+          { signal }
+        );
+
+        if (liveResponse.ok) {
+          const data = await liveResponse.json();
+          if (data && !data.errors && data.submissionCalendar) {
+            const rawCalendar = data.submissionCalendar;
+            const parsedCalendar =
+              typeof rawCalendar === 'string' ? JSON.parse(rawCalendar) : rawCalendar;
+
+            const calendarMap = {};
+            for (const [timestamp, count] of Object.entries(parsedCalendar)) {
+              const date = new Date(Number(timestamp) * 1000).toISOString().slice(0, 10);
+              calendarMap[date] = (calendarMap[date] || 0) + (Number(count) || 0);
+            }
+
+            const today = new Date();
+            today.setUTCHours(0, 0, 0, 0);
+            const firstDay = new Date(today);
+            firstDay.setUTCDate(firstDay.getUTCDate() - 364);
+
+            const days = [];
+            for (
+              let cursor = new Date(firstDay);
+              cursor <= today;
+              cursor.setUTCDate(cursor.getUTCDate() + 1)
+            ) {
+              const date = cursor.toISOString().slice(0, 10);
+              days.push({
+                date,
+                count: calendarMap[date] || 0
+              });
+            }
+
+            const maxCount = Math.max(...days.map((d) => d.count), 1);
+            const leveledDays = days.map((day) => ({
+              ...day,
+              level: day.count === 0 ? 0 : Math.max(1, Math.ceil((day.count / maxCount) * 4))
+            }));
+
+            const total = days.reduce((sum, day) => sum + day.count, 0);
+            const activeDays = days.filter((day) => day.count > 0).length;
+            const solvedTotal = Number.isFinite(data.totalSolved)
+              ? data.totalSolved
+              : data.matchedUserStats?.acSubmissionNum?.find((s) => s.difficulty === 'All')?.count ?? null;
+
+            return {
+              days: leveledDays,
+              total,
+              activeDays,
+              solvedTotal,
+              syncedAt: null,
+              fetchedAt: Date.now()
+            };
+          }
+        }
+      } catch (liveError) {
+        if (liveError.name === 'AbortError') throw liveError;
+        // Fall back gracefully to local snapshot if live API is temporarily unreachable
+      }
+
+      // 2. Fallback: local snapshot if available
       const response = await fetch(`${import.meta.env.BASE_URL}data/leetcode-activity.json`, {
         signal
       });
 
-      if (!response.ok) throw new Error('No LeetCode activity snapshot is available.');
+      if (!response.ok) throw new Error('No LeetCode activity data is available.');
 
       const data = await response.json();
       if (data.username && data.username.toLowerCase() !== username.toLowerCase()) {
@@ -168,6 +234,7 @@ export function useLeetcodeActivity(username) {
     cacheKey,
     enabled: Boolean(username),
     fetcher,
-    errorMessage: 'LeetCode activity is temporarily unavailable.'
+    errorMessage: 'LeetCode activity is temporarily unavailable. Check the connection and try again.'
   });
 }
+

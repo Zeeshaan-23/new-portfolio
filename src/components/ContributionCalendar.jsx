@@ -102,6 +102,14 @@ export default function ContributionCalendar({ activity, kind, noun = 'contribut
             ·
           </span>
           {activeDays} active days
+          {Number.isFinite(activity.solvedTotal) && (
+            <>
+              <span className="calendar-sep" aria-hidden="true">
+                ·
+              </span>
+              <span>{activity.solvedTotal} solved</span>
+            </>
+          )}
           {snapshot && (
             <>
               <span className="calendar-sep" aria-hidden="true">

@@ -22,11 +22,9 @@ export const portfolioData = {
       label: 'github.com/Zeeshaan-23',
       url: 'https://github.com/Zeeshaan-23'
     },
-    // Add the LeetCode handle here, then run `npm run sync:leetcode` to build
-    // the real calendar snapshot used by the activity dashboard.
     leetcode: {
-      username: '',
-      url: ''
+      username: 'Zeeshaan__Codes',
+      url: 'https://leetcode.com/u/Zeeshaan__Codes/'
     }
   },
 
