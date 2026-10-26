@@ -9,6 +9,7 @@ import ExperienceTimeline from './components/ExperienceTimeline';
 import ProjectShowcase from './components/ProjectShowcase';
 import BootSequence from './components/BootSequence';
 import SiteCursor from './components/SiteCursor';
+import Scrollbar from './components/Scrollbar';
 import './App.css';
 
 const { personal, education, experience, projects, technicalSkills, certifications, achievements } =
@@ -156,6 +157,7 @@ export default function App() {
     <div className="app">
       <BootSequence />
       <SiteCursor />
+      <Scrollbar />
 
       <a className="skip-link" href="#main">
         skip to content

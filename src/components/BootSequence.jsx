@@ -42,7 +42,7 @@ export default function BootSequence() {
 
   // Follow the pointer so the collapse converges on wherever the cursor is.
   useEffect(() => {
-    if (!enabled) return undefined;
+    if (!enabled || phase === 'done') return undefined;
 
     const track = (event) => {
       pointerRef.current = { x: event.clientX, y: event.clientY };
@@ -55,11 +55,12 @@ export default function BootSequence() {
       window.removeEventListener('pointermove', track);
       window.removeEventListener('pointerdown', track);
     };
-  }, [enabled]);
+  }, [enabled, phase]);
 
   // Hold the page still without touching layout, so nothing shifts when it ends.
+  // Scoped to the intro: once it is over these listeners must be gone for good.
   useEffect(() => {
-    if (!enabled) return undefined;
+    if (!enabled || phase === 'done') return undefined;
 
     const stopScroll = (event) => event.preventDefault();
     const stopKeys = (event) => {
@@ -76,7 +77,7 @@ export default function BootSequence() {
       window.removeEventListener('touchmove', stopScroll);
       window.removeEventListener('keydown', stopKeys);
     };
-  }, [enabled]);
+  }, [enabled, phase]);
 
   // Fill 0 -> 100, then hold the finished frame before the collapse.
   useEffect(() => {

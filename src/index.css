@@ -110,6 +110,21 @@ html::-webkit-scrollbar-thumb:hover {
   background-color: var(--dim);
 }
 
+/*
+ * A native scrollbar always draws the OS cursor over itself, so fine-pointer
+ * browsers hide the page one and render the custom bar instead, which inherits
+ * the themed cursor. Inner scrollers keep theirs so overflow stays usable.
+ */
+html.has-custom-scrollbar {
+  scrollbar-width: none;
+}
+
+html.has-custom-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
 /* Paint the boot sheet before React mounts, so there is no flash of the site. */
 html.boot-pending {
   background-color: var(--sheet);

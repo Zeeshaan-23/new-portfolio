@@ -889,6 +889,7 @@ html[data-theme='light'] .about-photo img {
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: thin;
+  scrollbar-color: var(--faint) transparent;
 }
 
 .calendar-inner {
@@ -1887,6 +1888,37 @@ html[data-theme='light'] .boot-overlay {
 .boot-percent {
   color: var(--boot-dim);
   font-variant-numeric: tabular-nums;
+}
+
+/* ---------- page scrollbar ---------- */
+
+.page-scrollbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1500;
+  width: 11px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms linear;
+}
+
+.page-scrollbar[data-active='true'] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.page-scrollbar-thumb {
+  width: 7px;
+  margin: 0 auto;
+  background-color: var(--faint);
+  transition: background-color 140ms linear;
+}
+
+.page-scrollbar-thumb:hover,
+.page-scrollbar-thumb[data-dragging='true'] {
+  background-color: var(--dim);
 }
 
 /* ---------- site cursor ---------- */
