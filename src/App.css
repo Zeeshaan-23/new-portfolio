@@ -1929,5 +1929,5 @@ html.has-custom-cursor * {
 /* Over anything clickable the disc becomes a ring: bigger, hollow, springy. */
 .site-cursor[data-hover='true'] .site-cursor-dot {
   background-color: transparent;
-  transform: scale(1.2);
+  transform: scale(1.875);
 }
