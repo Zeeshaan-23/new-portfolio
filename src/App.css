@@ -1812,3 +1812,72 @@ html[data-theme='light'] .about-photo img {
     grid-template-columns: 58px minmax(0, 1fr) auto;
   }
 }
+
+/* ---------- boot sequence ---------- */
+
+.boot-overlay {
+  --boot-bg: #ffffff;
+  --boot-fg: #0b100d;
+  --boot-fill: #142019;
+  --boot-dim: #c3cabf;
+
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: grid;
+  place-items: center;
+  padding: 0 22px;
+  color: var(--boot-fg);
+  background-color: var(--boot-bg);
+  font-family: var(--mono);
+  font-variant-ligatures: none;
+  -webkit-clip-path: circle(var(--boot-r, 150vmax) at var(--boot-x, 50%) var(--boot-y, 50%));
+  clip-path: circle(var(--boot-r, 150vmax) at var(--boot-x, 50%) var(--boot-y, 50%));
+  transition: opacity 160ms linear;
+  will-change: clip-path;
+}
+
+.boot-overlay.is-done {
+  opacity: 0;
+}
+
+.boot-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  align-items: center;
+  font-size: clamp(13px, 3.6vw, 16px);
+  line-height: 1.35;
+  transition: opacity 170ms ease-out;
+}
+
+.boot-overlay.is-collapsing .boot-inner {
+  opacity: 0;
+}
+
+.boot-glyphs {
+  white-space: pre;
+  letter-spacing: 0.08em;
+  color: var(--boot-fg);
+}
+
+.boot-meter {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  white-space: pre;
+}
+
+.boot-bracket,
+.boot-bar-empty {
+  color: var(--boot-dim);
+}
+
+.boot-bar-fill {
+  color: var(--boot-fill);
+}
+
+.boot-percent {
+  color: var(--boot-dim);
+  font-variant-numeric: tabular-nums;
+}

@@ -7,6 +7,7 @@ import Sidebar from './components/Sidebar';
 import ActivityDashboard from './components/ActivityDashboard';
 import ExperienceTimeline from './components/ExperienceTimeline';
 import ProjectShowcase from './components/ProjectShowcase';
+import BootSequence from './components/BootSequence';
 import './App.css';
 
 const { personal, education, experience, projects, technicalSkills, certifications, achievements } =
@@ -152,6 +153,8 @@ export default function App() {
 
   return (
     <div className="app">
+      <BootSequence />
+
       <a className="skip-link" href="#main">
         skip to content
       </a>

@@ -79,6 +79,15 @@ html {
   background-color: var(--bg);
 }
 
+/* Paint the boot sheet white before React mounts, so there is no flash of the site. */
+html.boot-pending {
+  background-color: #ffffff;
+}
+
+html.boot-pending body {
+  background-color: transparent;
+}
+
 body {
   margin: 0;
   padding: 0;

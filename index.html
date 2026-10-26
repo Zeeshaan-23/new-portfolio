@@ -19,6 +19,11 @@
         } catch (error) {
           document.documentElement.dataset.theme = 'dark';
         }
+
+        document.documentElement.classList.add('boot-pending');
+        window.setTimeout(function () {
+          document.documentElement.classList.remove('boot-pending');
+        }, 4000);
       })();
     </script>
     <title>Shaik Zeeshaan Suhail / Full-Stack Developer</title>
