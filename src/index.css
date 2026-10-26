@@ -84,6 +84,32 @@ html {
   background-color: var(--bg);
 }
 
+/* Scrollbar follows the theme tokens in both directions. */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--faint) var(--bg);
+}
+
+html::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+
+html::-webkit-scrollbar-track,
+html::-webkit-scrollbar-corner {
+  background-color: var(--bg);
+}
+
+html::-webkit-scrollbar-thumb {
+  border: 2px solid var(--bg);
+  border-radius: 0;
+  background-color: var(--faint);
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background-color: var(--dim);
+}
+
 /* Paint the boot sheet before React mounts, so there is no flash of the site. */
 html.boot-pending {
   background-color: var(--sheet);
