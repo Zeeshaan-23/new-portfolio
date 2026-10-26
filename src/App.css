@@ -1816,7 +1816,7 @@ html[data-theme='light'] .about-photo img {
 /* ---------- boot sequence ---------- */
 
 .boot-overlay {
-  --boot-bg: #ffffff;
+  --boot-bg: var(--sheet);
   --boot-fg: #0b100d;
   --boot-fill: #142019;
   --boot-dim: #c3cabf;
@@ -1835,6 +1835,13 @@ html[data-theme='light'] .about-photo img {
   clip-path: circle(var(--boot-r, 150vmax) at var(--boot-x, 50%) var(--boot-y, 50%));
   transition: opacity 160ms linear;
   will-change: clip-path;
+}
+
+/* The sheet is always the inverse of the page, so the disc stays legible over it. */
+html[data-theme='light'] .boot-overlay {
+  --boot-fg: #f4f7f1;
+  --boot-fill: #ffffff;
+  --boot-dim: #6e7c72;
 }
 
 .boot-overlay.is-done {
@@ -1880,4 +1887,37 @@ html[data-theme='light'] .about-photo img {
 .boot-percent {
   color: var(--boot-dim);
   font-variant-numeric: tabular-nums;
+}
+
+/* ---------- site cursor ---------- */
+
+html.has-custom-cursor,
+html.has-custom-cursor * {
+  cursor: none;
+}
+
+.site-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3000;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background-color: var(--sheet);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 140ms linear;
+  will-change: transform;
+}
+
+.site-cursor[data-visible='true'] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-cursor {
+    transition: none;
+  }
 }

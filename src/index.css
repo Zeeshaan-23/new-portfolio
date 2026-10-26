@@ -26,6 +26,9 @@
   --selection-fg: #08110a;
   --shadow: rgba(0, 0, 0, 0.38);
 
+  /* Inverse of the page: the boot sheet and the cursor disc that catches it. */
+  --sheet: #ffffff;
+
   --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
 
   color-scheme: dark;
@@ -63,6 +66,8 @@ html[data-theme='light'] {
   --selection-fg: #f7f9f2;
   --shadow: rgba(23, 32, 25, 0.12);
 
+  --sheet: #000000;
+
   color-scheme: light;
 }
 
@@ -79,9 +84,9 @@ html {
   background-color: var(--bg);
 }
 
-/* Paint the boot sheet white before React mounts, so there is no flash of the site. */
+/* Paint the boot sheet before React mounts, so there is no flash of the site. */
 html.boot-pending {
-  background-color: #ffffff;
+  background-color: var(--sheet);
 }
 
 html.boot-pending body {
