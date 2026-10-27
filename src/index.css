@@ -9,7 +9,6 @@
   --bg-rail: #0d100e;
   --bg-panel: #101511;
   --bg-panel-strong: #131a15;
-  --bg-footer: #101511;
   --bg-hover: #172018;
   --fg: #c7d1c9;
   --fg-soft: #aab5ad;
@@ -49,7 +48,6 @@ html[data-theme='light'] {
   --bg-rail: #eceee5;
   --bg-panel: #fafbf6;
   --bg-panel-strong: #ffffff;
-  --bg-footer: #fbfcf6;
   --bg-hover: #e3e7db;
   --fg: #354139;
   --fg-soft: #4b584f;

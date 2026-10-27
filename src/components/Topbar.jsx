@@ -44,9 +44,11 @@ export default function Topbar({ theme, onToggleTheme, sections, activeSection }
     <>
       <header className="topbar">
         <p className="topbar-command" aria-label="Terminal identity">
-          <span className="topbar-user">zeeshaan@portfolio</span>
-          <span className="topbar-prompt">:~$</span>
-          <span className="topbar-cmd"> whoami</span>
+          <a className="topbar-home" href="#/" aria-label="Zeeshaan, back to home">
+            <span className="topbar-user">zeeshaan@portfolio</span>
+            <span className="topbar-prompt">:~$</span>
+            <span className="topbar-cmd"> whoami</span>
+          </a>
         </p>
 
         <div className="topbar-actions">
@@ -91,7 +93,7 @@ export default function Topbar({ theme, onToggleTheme, sections, activeSection }
                 return (
                   <li key={section.id}>
                     <a
-                      href={`#${section.id}`}
+                      href={section.href}
                       className={isActive ? 'is-active' : undefined}
                       aria-current={isActive ? 'location' : undefined}
                       onClick={() => setMenuOpen(false)}

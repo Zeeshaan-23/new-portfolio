@@ -16,7 +16,6 @@ const THEME_VARIABLES = [
   '--bg-rail',
   '--bg-panel',
   '--bg-panel-strong',
-  '--bg-footer',
   '--bg-hover',
   '--fg',
   '--fg-soft',

@@ -125,6 +125,39 @@ export const portfolioData = {
     }
   ],
 
+  gallery: [
+    {
+      id: 'liberty-walk',
+      src: 'pictures/736d1fc83f95cfbe0e668a50f28279c7.jpg',
+      label: 'liberty walk f40',
+      alt: 'Poster of a Liberty Walk Ferrari F40 parked under city lights.'
+    },
+    {
+      id: 'electric-hands',
+      src: 'pictures/e094cf85c35a3a7763f3df418b1d776c.jpg',
+      label: 'electric hands',
+      alt: 'Rework of the Creation of Adam: two cracked stone hands lit by purple electricity.'
+    },
+    {
+      id: 'panel-collage',
+      src: 'pictures/custom1.jpg',
+      label: 'panel collage',
+      alt: 'Collage of black-and-white manga panels with red accents.'
+    },
+    {
+      id: 'photo-edits',
+      src: 'pictures/Master1.jpg',
+      label: 'photo edits',
+      alt: 'Collage of edited portrait photographs styled as magazine covers.'
+    },
+    {
+      id: 'glass-palette',
+      src: 'pictures/glass-palette-wallpaper-5120x2880-v0-ybbeukiwui1g1 (1).webp',
+      label: 'glass palette',
+      alt: 'Six translucent glass capsules fading from red to violet on a dark background.'
+    }
+  ],
+
   technicalSkills: {
     categories: [
       {

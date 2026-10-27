@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 *.pid
 extract-carousel.js
+
+# Personal portfolio notes — kept local, never published
+README.md

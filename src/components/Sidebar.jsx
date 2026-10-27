@@ -22,7 +22,7 @@ export default function Sidebar({ personal, sections, activeSection }) {
             return (
               <li key={section.id}>
                 <a
-                  href={`#${section.id}`}
+                  href={section.href}
                   className={isActive ? 'is-active' : undefined}
                   aria-current={isActive ? 'location' : undefined}
                 >
