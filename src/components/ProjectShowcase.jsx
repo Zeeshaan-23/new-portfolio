@@ -18,11 +18,12 @@ function scrambleText(text, progress) {
     .join('');
 }
 
-function ScrambleText({ text, className, as: Tag = 'span' }) {
+function ScrambleText({ text, className, as: Tag = 'span', trigger = 0 }) {
   const [output, setOutput] = useState(text);
 
   useEffect(() => {
-    if (prefersReducedMotion()) return undefined;
+    // A negative trigger marks a stacked project that is not on screen yet.
+    if (trigger < 0 || prefersReducedMotion()) return undefined;
 
     let frame = 0;
     const totalFrames = 20;
@@ -39,9 +40,9 @@ function ScrambleText({ text, className, as: Tag = 'span' }) {
     }, 24);
 
     return () => window.clearInterval(interval);
-  }, [text]);
+  }, [text, trigger]);
 
-  if (prefersReducedMotion()) {
+  if (prefersReducedMotion() || trigger < 0) {
     return <Tag className={className}>{text}</Tag>;
   }
 
@@ -78,6 +79,7 @@ function AsciiNoise() {
 
 export default function ProjectShowcase({ projects }) {
   const [index, setIndex] = useState(0);
+  const [cycle, setCycle] = useState(0);
   const [decaying, setDecaying] = useState(false);
   const lockRef = useRef(false);
   const timeoutRef = useRef(null);
@@ -93,6 +95,7 @@ export default function ProjectShowcase({ projects }) {
 
     if (prefersReducedMotion()) {
       setIndex(nextIndex);
+      setCycle((current) => current + 1);
       return;
     }
 
@@ -100,6 +103,7 @@ export default function ProjectShowcase({ projects }) {
     setDecaying(true);
     timeoutRef.current = window.setTimeout(() => {
       setIndex(nextIndex);
+      setCycle((current) => current + 1);
       setDecaying(false);
       lockRef.current = false;
     }, 170);
@@ -159,43 +163,56 @@ export default function ProjectShowcase({ projects }) {
       <div className="project-stage" data-state={decaying ? 'decaying' : 'ready'}>
         {decaying && <AsciiNoise />}
 
-        <article className="project" key={project.id}>
-          <div className="project-main">
-            <div className="project-topline">
-              <span>{project.timeline}</span>
-              <span>{project.role}</span>
-            </div>
+        {/* Every project shares one grid cell, so the stage always reserves the
+            tallest one and the page never changes height when switching. */}
+        {projects.map((item, itemIndex) => {
+          const isActive = itemIndex === index;
+          const trigger = isActive ? cycle : -1;
 
-            <h3 className="project-title">
-              <ScrambleText text={project.title} />
-            </h3>
+          return (
+            <article
+              key={item.id}
+              className={`project${isActive ? ' is-active' : ''}`}
+              aria-hidden={isActive ? undefined : 'true'}
+            >
+              <div className="project-main">
+                <div className="project-topline">
+                  <span>{item.timeline}</span>
+                  <span>{item.role}</span>
+                </div>
 
-            <p className="project-description">
-              <ScrambleText text={project.description} />
-            </p>
+                <h3 className="project-title">
+                  <ScrambleText text={item.title} trigger={trigger} />
+                </h3>
 
-            <Stack items={project.stack} />
-            <Bullets items={project.bullets} />
-          </div>
+                <p className="project-description">
+                  <ScrambleText text={item.description} trigger={trigger} />
+                </p>
 
-          <aside className="project-aside" aria-label="Project details">
-            <div className="project-aside-block">
-              <span className="field-label">deployment</span>
-              <span>{project.deployment || 'not deployed'}</span>
-            </div>
+                <Stack items={item.stack} />
+                <Bullets items={item.bullets} />
+              </div>
 
-            <div className="project-aside-block">
-              <span className="field-label">source</span>
-              {project.repo ? (
-                <a href={project.repo} target="_blank" rel="noreferrer">
-                  repository <span aria-hidden="true">↗</span>
-                </a>
-              ) : (
-                <span className="is-muted">private</span>
-              )}
-            </div>
-          </aside>
-        </article>
+              <aside className="project-aside" aria-label="Project details">
+                <div className="project-aside-block">
+                  <span className="field-label">deployment</span>
+                  <span>{item.deployment || 'not deployed'}</span>
+                </div>
+
+                <div className="project-aside-block">
+                  <span className="field-label">source</span>
+                  {item.repo ? (
+                    <a href={item.repo} target="_blank" rel="noreferrer">
+                      repository <span aria-hidden="true">↗</span>
+                    </a>
+                  ) : (
+                    <span className="is-muted">private</span>
+                  )}
+                </div>
+              </aside>
+            </article>
+          );
+        })}
       </div>
     </section>
   );

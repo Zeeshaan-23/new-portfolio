@@ -28,6 +28,14 @@ export const portfolioData = {
     }
   },
 
+  // First milestone of the journey timeline on the Work page.
+  origin: {
+    date: 'Dec 2006',
+    title: 'Born',
+    subtitle: 'Sattenapalli, Andhra Pradesh',
+    description: 'First entry in the log.'
+  },
+
   education: {
     institution: 'SRM University AP',
     location: 'Amaravati, AP',
