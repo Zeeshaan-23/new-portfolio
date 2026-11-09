@@ -8,9 +8,6 @@ export default function Sidebar({ personal, sections, activeSection }) {
 
       <div className="identity-meta">
         <p>{personal.location}</p>
-        <p>
-          <a href={`mailto:${personal.email}`}>{personal.email}</a>
-        </p>
       </div>
 
       <nav className="sidenav" aria-label="Section index">

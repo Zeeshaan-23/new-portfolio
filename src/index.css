@@ -21,6 +21,7 @@
   --green-deep: #3c8f4c;
   --rule: #202821;
   --rule-strong: #2b352d;
+  --danger: #ef8a7a;
   --selection-bg: #8ce99a;
   --selection-fg: #08110a;
   --shadow: rgba(0, 0, 0, 0.38);
@@ -60,6 +61,7 @@ html[data-theme='light'] {
   --green-deep: #16562b;
   --rule: #d5dbcf;
   --rule-strong: #c4ccbd;
+  --danger: #a8322a;
   --selection-bg: #1c7438;
   --selection-fg: #f7f9f2;
   --shadow: rgba(23, 32, 25, 0.12);

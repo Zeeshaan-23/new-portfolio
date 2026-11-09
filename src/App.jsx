@@ -11,6 +11,7 @@ import AboutPage from './components/AboutPage';
 import WorkPage from './components/WorkPage';
 import GalleryPage from './components/GalleryPage';
 import ContactPage from './components/ContactPage';
+import Footer from './components/Footer';
 import BootSequence from './components/BootSequence';
 import SiteCursor from './components/SiteCursor';
 import Scrollbar from './components/Scrollbar';
@@ -135,6 +136,8 @@ export default function App() {
             <ContactPage />
           </div>
         )}
+
+        <Footer />
       </main>
     </div>
   );

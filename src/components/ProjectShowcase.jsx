@@ -1,56 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { Bullets, Stack } from './EntryBits';
+import DecodeText from './DecodeText';
 
 const GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&*+-<=>[]{}';
 
 function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
-
-function scrambleText(text, progress) {
-  return text
-    .split('')
-    .map((character, index) => {
-      if (!/[A-Za-z0-9]/.test(character)) return character;
-      if (index / text.length < progress) return character;
-      return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
-    })
-    .join('');
-}
-
-function ScrambleText({ text, className, as: Tag = 'span', trigger = 0 }) {
-  const [output, setOutput] = useState(text);
-
-  useEffect(() => {
-    // A negative trigger marks a stacked project that is not on screen yet.
-    if (trigger < 0 || prefersReducedMotion()) return undefined;
-
-    let frame = 0;
-    const totalFrames = 20;
-    const interval = window.setInterval(() => {
-      frame += 1;
-
-      if (frame >= totalFrames) {
-        setOutput(text);
-        window.clearInterval(interval);
-        return;
-      }
-
-      setOutput(scrambleText(text, frame / totalFrames));
-    }, 24);
-
-    return () => window.clearInterval(interval);
-  }, [text, trigger]);
-
-  if (prefersReducedMotion() || trigger < 0) {
-    return <Tag className={className}>{text}</Tag>;
-  }
-
-  return (
-    <Tag className={className} aria-label={text}>
-      {output}
-    </Tag>
-  );
 }
 
 function AsciiNoise() {
@@ -182,11 +137,11 @@ export default function ProjectShowcase({ projects }) {
                 </div>
 
                 <h3 className="project-title">
-                  <ScrambleText text={item.title} trigger={trigger} />
+                  <DecodeText text={item.title} trigger={trigger} />
                 </h3>
 
                 <p className="project-description">
-                  <ScrambleText text={item.description} trigger={trigger} />
+                  <DecodeText text={item.description} trigger={trigger} />
                 </p>
 
                 <Stack items={item.stack} />
